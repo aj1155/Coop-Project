@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import Coop.mapper.ProjectMapper;
@@ -62,6 +63,13 @@ public class ProjectController {
 			return projectMapper.selectById2(id);
 			
 	}
+	@ResponseBody
+	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.POST)
+	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
+		 response.addHeader("Access-Control-Allow-Origin", "*");
+		 return projectMapper.selectById2(id);
+			
+	}
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
 	 public String goInfo(@PathVariable String id,Model model) {
 			System.out.println(id);
@@ -69,4 +77,5 @@ public class ProjectController {
 			model.addAttribute("project",project);
 			return "layout/project/info";
 	}
+	 
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+             
+<mapper namespace="Coop.mapper.ProjectMapper">
+	
+	
+	<select id="selectById" resultType = "Coop.model.Project">
+    	SELECT * FROM Project
+    	WHERE id in(SELECT projectId
+    	from pro_user
+    	where userId = #{id})
+    </select>
+    
+    <select id="selectById2" resultType = "Coop.model.Project">
+    	SELECT * FROM Project
+    	WHERE id in(SELECT projectId
+    	from pro_user
+    	where userId = #{id})
+    </select>
+    
+    <select id="selectByProjectId" resultType = "Coop.model.Project">
+    	SELECT * FROM Project
+    	WHERE id = #{id}
+    </select>
+	
+    <insert id="insertProject" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO Project(name,owner,des,create_time)
+    	values(#{name},#{owner},#{des},#{create_time})
+    </insert>
+    
+     <insert id="insertPro_user">
+    	INSERT INTO pro_user
+    	values(#{userId},#{proId})
+    </insert>
+
+</mapper>
+             

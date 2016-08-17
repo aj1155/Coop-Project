@@ -21,7 +21,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import java.text.SimpleDateFormat;
-
+import Coop.mapper.FileMapper;
 
 @Controller
 @RequestMapping("/project")
@@ -29,6 +29,7 @@ public class ProjectController {
 	
 	@Autowired ProjectMapper projectMapper;
 	@Autowired UserService userService;
+	@Autowired FileMapper fileMapper;
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -76,6 +77,7 @@ public class ProjectController {
 			System.out.println(id);
 			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
 			model.addAttribute("project",project);
+			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			return "layout/project/info";
 	}
 	 

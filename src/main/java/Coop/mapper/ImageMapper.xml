@@ -17,7 +17,7 @@
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO Image (userId, fileName, fileSize, fileTime, data)
-        VALUES (#{userId}, #{fileName}, #{fileSize}, GETDATE(), #{data})
+        VALUES (#{userId}, #{fileName}, #{fileSize}, NOW(), #{data})
     </insert>
     
    

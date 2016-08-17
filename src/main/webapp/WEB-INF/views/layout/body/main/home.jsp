@@ -68,7 +68,7 @@ ul.mylist li, ol.mylist li {
   <div id="Overview" class="tab-pane fade in active">
     
     <h3>Overview</h3>
-    <p>Some content.</p>
+    <p>My Recently Actvity</p>
   </div>
   <div id="Project" class="tab-pane fade">
    <div class="filter-bar">

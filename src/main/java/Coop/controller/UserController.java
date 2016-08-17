@@ -30,9 +30,11 @@ public class UserController {
 	@Autowired UserService userService;
 	@Autowired ImageMapper imageMapper;
 	@Autowired FileService fileService;
+	
 	@RequestMapping(value="/regist.do", method = RequestMethod.POST)
 	 public String regist(User user, Model model) {
-		
+			System.out.println("register");
+			System.out.println(user);
 		 	user.setPassword(userService.encryptPasswd(user.getPassword()));
 	        String message = userService.validateBeforeInsert(user);
 	        if (message == null) {

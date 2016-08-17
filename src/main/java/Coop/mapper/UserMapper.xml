@@ -15,7 +15,7 @@
     </select>
     
     <insert id="insertUser">
-    	INSERT INTO User
+    	INSERT INTO User(id,password,name,email)
     	values(#{id},#{password},#{name},#{email})
     </insert>
     

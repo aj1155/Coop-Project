@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,10 +65,10 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
-	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.POST)
+	@RequestMapping(value = "/proList.do",method = RequestMethod.POST)
 	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
-		 response.addHeader("Access-Control-Allow-Origin", "*");
-		 return projectMapper.selectById2(id);
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		return projectMapper.selectById2(id);
 			
 	}
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)

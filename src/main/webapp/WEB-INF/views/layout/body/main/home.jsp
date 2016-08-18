@@ -72,11 +72,11 @@ ul.mylist li, ol.mylist li {
   </div>
   <div id="Project" class="tab-pane fade">
    <div class="filter-bar">
-    <form accept-charset="UTF-8" action="/search" class="d-inline" method="get" role="search">
+    <form accept-charset="UTF-8" action="/Coop/project/search.do" class="d-inline" method="post" role="search">
     <!--<input type="hidden" name="user" value="<sec:authentication property="user.name" />">-->
-    <input type="text" id="your-repos-filter" name="q" style="width:200px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
+    <input type="text" id="your-repos-filter" name="search" style="width:200px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
     <input type="submit" style="margin-bottom:10px;" value="Search" class="btn">
-	<input type="button" id="new_pro" style="margin-bottom:10px;" value="New" class="btn pull-right">
+	<input type="button" id="new_pro" style="margin-bottom:10px;" value="New" class="btn pull-right btn-success">
 	</form>
 	
     </div>

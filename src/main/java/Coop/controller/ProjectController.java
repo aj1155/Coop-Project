@@ -68,8 +68,15 @@ public class ProjectController {
 	@ResponseBody
 	@RequestMapping(value = "/proList.do",method = RequestMethod.POST)
 	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		return projectMapper.selectById2(id);
+		if(userService.getCurrentUser().getId() == id)
+		{
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			return projectMapper.selectById2(id);
+		}
+		else{
+			return null;
+		}
+		
 			
 	}
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
@@ -80,5 +87,11 @@ public class ProjectController {
 			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			return "layout/project/info";
 	}
-	 
+	@RequestMapping(value="/search.do",method = RequestMethod.POST)
+	public String search(@RequestParam("search") String search,Model model){
+		System.out.println(search);
+		model.addAttribute("ProjectList",projectMapper.selectBySearch(search));
+		model.addAttribute("user",userService.getCurrentUser());
+		return "layout/main/home";
+	}
 }

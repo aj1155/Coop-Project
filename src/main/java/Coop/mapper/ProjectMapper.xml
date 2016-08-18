@@ -23,6 +23,12 @@
     	SELECT * FROM Project
     	WHERE id = #{id}
     </select>
+    <select id="selectBySearch" parameterType ="String" resultType = "Coop.model.Project">
+    <![CDATA[
+    	SELECT * FROM Project
+    	WHERE name  like CONCAT('%', #{search} , '%')
+    ]]>
+    </select>
 	
     <insert id="insertProject" useGeneratedKeys="true" keyProperty="id">
     	INSERT INTO Project(name,owner,des,create_time)

@@ -49,7 +49,14 @@ public class FileController {
 		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
         return "layout/file/create";
     }
-	
+	@ResponseBody
+	@RequestMapping(value = "/fileList.do",method = RequestMethod.GET)
+	 public List<File> ListFile(@RequestParam String id,HttpServletResponse response) {
+		
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		return fileMapper.selectByProjectId(Integer.parseInt(id));	
+			
+	}
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.POST)
 	public String create(@PathVariable String projectId,@PathVariable String userId,@RequestParam("des") String des,
 			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException {

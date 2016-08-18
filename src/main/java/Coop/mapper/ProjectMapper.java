@@ -13,5 +13,6 @@ public interface ProjectMapper {
 	void insertPro_user(Pro_User pro_user);
 	List<Project> selectById(User user);
 	List<Project> selectById2(String id);
+	List<Project> selectBySearch(String search);
 	Project selectByProjectId(int id);
 }

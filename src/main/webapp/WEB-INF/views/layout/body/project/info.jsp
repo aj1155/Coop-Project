@@ -37,14 +37,15 @@ ul.mylist li, ol.mylist li {
   <li><a data-toggle="tab" href="#problem"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Problem</a></li>
   <li><a data-toggle="tab" href="#request"><i class="fa fa-refresh" aria-hidden="true"></i> Request</a></li>
   <li><a data-toggle="tab" href="#setting"><i class="fa fa-wrench" aria-hidden="true"></i> Settings</a></li>
+  <li><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
 </ul>
 
 <div class="tab-content">
   <div id="work" class="tab-pane fade in active">
   	 <div class="filter-bar">
-    <form accept-charset="UTF-8" action="/search" class="d-inline" method="get" role="search">
+    <form accept-charset="UTF-8" action="/Coop/file/search.do" class="d-inline" method="POST" role="search">
     <!--<input type="hidden" name="user" value="<sec:authentication property="user.name" />">-->
-    <input type="text" id="your-repos-filter" name="q" style="width:320px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
+    <input type="text" id="your-repos-filter" name="search" style="width:320px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
     <input type="submit" style="margin-bottom:10px;" value="Search" class="btn">
 	<input type="button" id="new_file" style="margin-bottom:10px;" value="Upload File" class="btn pull-right btn-success">
 	</form>
@@ -72,7 +73,12 @@ ul.mylist li, ol.mylist li {
     <h3>Setting activity</h3>
     <p>Some content in menu 2.</p>
   </div>
+  <div id="Public" class="tab-pane fade">
+    <h3>Public activity</h3>
+    <p>Some content in menu 2.</p>
   </div>
+  </div>
+  
  
 </sec:authorize>
   

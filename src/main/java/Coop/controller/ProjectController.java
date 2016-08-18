@@ -68,7 +68,7 @@ public class ProjectController {
 	@ResponseBody
 	@RequestMapping(value = "/proList.do",method = RequestMethod.POST)
 	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
-		if(userService.getCurrentUser().getId() == id)
+		if(userService.getCurrentUser().getId().equals(id))
 		{
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			return projectMapper.selectById2(id);

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+             
+
+<mapper namespace="Coop.mapper.ProUserMapper">
+	
+    <update id="update" parameterType="hashmap">
+    	UPDATE pro_user 
+		SET cont = #{cont}
+		WHERE projectId = #{proId} and userId = #{userId};
+    </update>
+    <update id="updateCont">
+        UPDATE pro_user 
+        SET cont = cont + #{cont}
+        WHERE projectId = #{proId} AND userId = #{userId}
+    </update>
+      
+    <insert id="insertPro_user">
+    	INSERT INTO pro_user(userId,projectId)
+    	values(#{userId},#{proId})
+    </insert>
+
+</mapper>
+             

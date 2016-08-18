@@ -8,6 +8,7 @@
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/Coop/res/js/canvasjs.min.js"></script>
 <style>@ import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
 

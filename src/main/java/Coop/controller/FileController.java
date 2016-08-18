@@ -1,38 +1,28 @@
 package Coop.controller;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.file.Paths;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import Coop.mapper.FileMapper;
+import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
-import Coop.model.Image;
-import Coop.model.Pro_User;
-import Coop.model.Project;
-import Coop.service.UserService;
 import Coop.model.File;
-import Coop.mapper.FileMapper;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import Coop.model.Pro_User;
 @Controller
 @RequestMapping("/file")
 public class FileController {
@@ -40,6 +30,7 @@ public class FileController {
 	@Autowired ProjectMapper projectMapper;
 	@Autowired UserMapper userMapper;
 	@Autowired FileMapper fileMapper;
+	@Autowired ProUserMapper proUserMapper;
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.GET)
 	public String create(@PathVariable String projectId,@PathVariable String userId,Model model) {
@@ -62,6 +53,11 @@ public class FileController {
 			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException {
 		String user = userId;
 		String project = projectId;
+		Pro_User pro = new Pro_User();
+		pro.setCont(3);
+		pro.setProId(Integer.parseInt(projectId));
+		pro.setUserId(userId);
+		proUserMapper.updateCont(pro);
 		if(uploadedFile.getSize()>0){
 			 File file = new File();
 			 file.setUserId(user);

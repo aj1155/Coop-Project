@@ -30,6 +30,14 @@
     ]]>
     </select>
 	
+	<select id="selectCont" resultType = "Coop.model.ChartData">
+    	select p.name 'legendText', pro.cont 'y'
+		from project p join pro_user pro
+		where p.id in (select projectId
+		from pro_user
+		where userId = #{userId})
+		and p.id = pro.projectId;
+    </select>
     <insert id="insertProject" useGeneratedKeys="true" keyProperty="id">
     	INSERT INTO Project(name,owner,des,create_time)
     	values(#{name},#{owner},#{des},#{create_time})

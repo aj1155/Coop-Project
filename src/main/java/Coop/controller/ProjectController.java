@@ -1,27 +1,28 @@
 package Coop.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import Coop.mapper.FileMapper;
+import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.service.UserService;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import java.text.SimpleDateFormat;
-import Coop.mapper.FileMapper;
 
 @Controller
 @RequestMapping("/project")
@@ -30,6 +31,7 @@ public class ProjectController {
 	@Autowired ProjectMapper projectMapper;
 	@Autowired UserService userService;
 	@Autowired FileMapper fileMapper;
+	@Autowired ProUserMapper proUserMapper;
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -52,7 +54,7 @@ public class ProjectController {
 		Pro_User pro_user = new Pro_User();
 		pro_user.setProId(project.getId());
 		pro_user.setUserId(id);
-		projectMapper.insertPro_user(pro_user);
+		proUserMapper.insertPro_user(pro_user);
 		
 	   model.addAttribute("ProjectList",projectMapper.selectById(userService.getCurrentUser()));
        return "layout/main/home";
@@ -82,9 +84,15 @@ public class ProjectController {
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
 	 public String goInfo(@PathVariable String id,Model model) {
 			System.out.println(id);
+			HashMap<String,Object> map = new HashMap<String,Object>();
 			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
 			model.addAttribute("project",project);
 			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
+			Pro_User pro = new Pro_User();
+			pro.setCont(1);
+			pro.setProId(project.getId());
+			pro.setUserId(userService.getCurrentUser().getId());
+			proUserMapper.updateCont(pro);
 			return "layout/project/info";
 	}
 	@RequestMapping(value="/search.do",method = RequestMethod.POST)

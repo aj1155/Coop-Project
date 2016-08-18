@@ -19,7 +19,54 @@
 		        location.href = "/Coop/user/"+$("#user_id").val()+"/profile.do";
 		 });
 		 
-		
+		$('#chartTab').click(function(){
+			$.ajax({
+	 			url : '/Coop/home/chart.do',
+	 			method :'GET',
+	 			contentType : 'application/String;charset=UTF-8',
+	 			data : {"id" : $("#user_id").val() },
+	 			success : function(data){
+	 				chartShow(data);
+	 			
+	 				
+	 			},
+	 			error : function(data){
+	 				console.log(data);
+	 				alert("실패");
+	 			}
+	 		})
+			
+		});
+		function chartShow(chartData){
+			var chart = new CanvasJS.Chart("chartContainer",
+					{
+						title:{
+							text: "Project Contribute"
+						},
+				                animationEnabled: true,
+						legend:{
+							verticalAlign: "bottom",
+							horizontalAlign: "center"
+						},
+						data: [
+						{        
+							indexLabelFontSize: 20,
+							indexLabelFontFamily: "Monospace",       
+							indexLabelFontColor: "darkgrey", 
+							indexLabelLineColor: "darkgrey",        
+							indexLabelPlacement: "outside",
+							type: "pie",       
+							showInLegend: true,
+							toolTipContent: "{y} - <strong>#percent%</strong>",
+							dataPoints: chartData
+								
+							
+						}
+						]
+					});
+					chart.render();
+			
+		};
 		
 	});
 </script>
@@ -61,7 +108,7 @@ ul.mylist li, ol.mylist li {
     	<ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#Overview"><i class="fa fa-eye" aria-hidden="true"></i> Overview</a></li>
   <li><a data-toggle="tab" href="#Project"><i class="fa fa-users" aria-hidden="true"></i> Project</a></li>
-  <li><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
+  <li id="chartTab"><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
 </ul>
 
 <div class="tab-content">
@@ -90,7 +137,7 @@ ul.mylist li, ol.mylist li {
   </div>
   <div id="Public" class="tab-pane fade">
     <h3>Public activity</h3>
-    <p>Some content in menu 2.</p>
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
   </div>
   </div>
   

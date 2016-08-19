@@ -39,7 +39,6 @@ public class HomeController {
 			System.out.println(id);
 			
 			List<ChartData> list = projectMapper.selectCont(id);
-			System.out.println(list);
 			return list;
 	        
 	    }

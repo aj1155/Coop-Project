@@ -48,7 +48,7 @@ public class ProjectController {
     }
 	@RequestMapping(value = "/{id}/create.do",method = RequestMethod.POST)
 	 public String regist(@PathVariable String id,Project project,Model model) {
-		
+		System.out.println(id);
 		project.setCreate_time(getCurrentDate());
 		projectMapper.insertProject(project);
 		Pro_User pro_user = new Pro_User();

@@ -35,8 +35,8 @@
 		from project p join pro_user pro
 		where p.id in (select projectId
 		from pro_user
-		where userId = #{userId})
-		and p.id = pro.projectId;
+		where userId = #{userId}
+		and p.id = pro.projectId) and pro.userId = #{userId};
     </select>
     <insert id="insertProject" useGeneratedKeys="true" keyProperty="id">
     	INSERT INTO Project(name,owner,des,create_time)

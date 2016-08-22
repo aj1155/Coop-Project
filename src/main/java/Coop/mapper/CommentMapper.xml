@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+             
+<mapper namespace="Coop.mapper.CommentMapper">
+	
+	<!-- User 테이블에서 유저정보를 가져옴 기본 select문 -->
+    <select id="selectAll" resultType = "Coop.model.Comment">
+    	SELECT * FROM COMMENT
+    </select>
+    
+    <select id="selectById" resultType = "Coop.model.Comment">
+    	SELECT * FROM COMMENT
+    	WHERE ID = #{id}
+    </select>
+    <select id="selectByFileId" resultType = "Coop.model.Comment">
+    	select c.*,u.name 'userName'
+		from comment c join user u 
+		where c.fileId = #{fileId}
+		and c.userId = u.id;
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO COMMENT(projectId,fileId,userId,writeTime,content)
+    	values(#{projectId},#{fileId},#{userId},NOW(),#{content})
+    </insert>
+    
+   
+
+</mapper>
+             

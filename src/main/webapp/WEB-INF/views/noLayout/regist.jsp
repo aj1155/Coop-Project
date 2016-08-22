@@ -22,9 +22,9 @@
 
    <section class="container">
          <section class="login-form">
-            <form method="post" role="login" action="/Coop/user/regist.do">
+            <form method="post" role="login">
                <img src="/Coop/res/images/logo.png" class="img-responsive" alt="" />
-               <input type="text" name="id" placeholder="Id" required class="form-control input-lg" value="${user.id}" />
+               <input type="text" name="id" placeholder="Id" required class="form-control input-lg" />
                <input type="password" name="password" placeholder="Password" required class="form-control input-lg" />
                <input type="text" name="name" placeholder="Name" required class="form-control input-lg" />
                <input type="email" name="email" placeholder="Email" required class="form-control input-lg" />

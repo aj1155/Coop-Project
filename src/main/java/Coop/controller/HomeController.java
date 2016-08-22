@@ -1,6 +1,5 @@
 package Coop.controller;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.ChartData;
+import Coop.model.User;
 import Coop.service.UserService;
 
 @Controller
@@ -31,14 +32,29 @@ public class HomeController {
 			System.out.println("조인");
 	        return "home";
 	    }
-		
+		@ResponseBody
+		@RequestMapping(value="/loginProMobile.do", method=RequestMethod.POST)
+	    public String logMobile(@RequestBody String id,@RequestBody String password,Model model) {
+			
+			if(userMapper.loginProcess(id,userService.encryptPasswd(password))!=null){
+				return "success";
+			}
+			else{
+				return "fail";
+			}
+			
+	    }
 		@ResponseBody
 		@RequestMapping(value="/chart.do", method=RequestMethod.GET)
 	    public List<ChartData> chart(@RequestParam String id,HttpServletResponse response) {
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			System.out.println(id);
+			
 			
 			List<ChartData> list = projectMapper.selectCont(id);
+			for(int i=0;i<list.size();i++)
+			{
+				System.out.println(list.get(i).getLegendText());
+			}
 			return list;
 	        
 	    }
@@ -49,5 +65,24 @@ public class HomeController {
 	    	model.addAttribute("user",null);
 	        return "regist";
 	    }
+	    
+	    @RequestMapping(value="/regist.do", method = RequestMethod.POST)
+		 public String regist(User user, Model model) {
+				System.out.println("register");
+				System.out.println(user);
+			 	user.setPassword(userService.encryptPasswd(user.getPassword()));
+		        String message = userService.validateBeforeInsert(user);
+		        if (message == null) {
+		        	userMapper.insertUser(user);
+		        } else{
+		        	model.addAttribute("user",user);
+		        	model.addAttribute("msg", message);
+		        	return "regist";
+		        }
+		            
+		      
+		        return "home";
+		    }
+		
 
 }

@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import Coop.mapper.CommentMapper;
 import Coop.mapper.FileMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
+import Coop.model.Comment;
 import Coop.model.File;
 import Coop.model.Pro_User;
+import Coop.service.UserService;
 @Controller
 @RequestMapping("/file")
 public class FileController {
@@ -31,6 +34,8 @@ public class FileController {
 	@Autowired UserMapper userMapper;
 	@Autowired FileMapper fileMapper;
 	@Autowired ProUserMapper proUserMapper;
+	@Autowired UserService userService;
+	@Autowired CommentMapper commentMapper;
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.GET)
 	public String create(@PathVariable String projectId,@PathVariable String userId,Model model) {
@@ -39,6 +44,19 @@ public class FileController {
 		model.addAttribute("userId",userId);
 		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
         return "layout/file/create";
+    }
+	@RequestMapping(value = "/{fileId}/{proId}/detail.do",method = RequestMethod.GET)
+	public String detail(@PathVariable String fileId,@PathVariable String proId,Model model) {
+		
+		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(proId)));
+		model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
+		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
+        return "layout/file/detail";
+    }
+	@ResponseBody
+	@RequestMapping(value = "/comment.do",method = RequestMethod.GET)
+	public List<Comment> comment(@RequestParam String fileId,Model model) {
+		return commentMapper.selectByFileId(Integer.parseInt(fileId));
     }
 	@ResponseBody
 	@RequestMapping(value = "/fileList.do",method = RequestMethod.GET)
@@ -84,6 +102,23 @@ public class FileController {
 	            output.write(file.getData());
 	        }
 
+		
+        
+    }
+	@RequestMapping(value = "/{proId}/{fileId}/comment.do",method = RequestMethod.POST)
+	public String comment(@PathVariable String proId,@PathVariable String fileId,@RequestParam String text,Model model)  {
+		Comment comment = new Comment();
+		comment.setProjectId(Integer.parseInt(proId));
+		comment.setFileId(Integer.parseInt(fileId));
+		comment.setUserId(userService.getCurrentUser().getId());
+		comment.setContent(text);
+		
+		commentMapper.insert(comment);
+
+		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(proId)));
+		model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
+		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
+        return "layout/file/detail";
 		
         
     }

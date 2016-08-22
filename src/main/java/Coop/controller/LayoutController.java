@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import Coop.mapper.ProjectMapper;
+import Coop.model.Active;
 import Coop.service.UserService;
 
 @Controller
@@ -20,6 +21,9 @@ public class LayoutController {
     public String index(Model model) {
 		model.addAttribute("ProjectList",projectMapper.selectById(userService.getCurrentUser()));
 		model.addAttribute("user",userService.getCurrentUser());
+		Active act = new Active();
+		act.setAct(null);
+		model.addAttribute("class",act);
         return "layout/main/home";
     }
 	

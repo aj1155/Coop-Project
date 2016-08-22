@@ -10,6 +10,7 @@ public interface UserMapper {
 	User selectById(String id);
 	void insertUser(User user);
 	void updateUserImage(User user);
+	User loginProcess(String id,String password);
 	
 
 }

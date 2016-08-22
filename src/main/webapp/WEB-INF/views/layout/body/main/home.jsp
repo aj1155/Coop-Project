@@ -106,10 +106,11 @@ ul.mylist li, ol.mylist li {
     <!-- edit form column -->
     <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
     	<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#Overview"><i class="fa fa-eye" aria-hidden="true"></i> Overview</a></li>
-  <li><a data-toggle="tab" href="#Project"><i class="fa fa-users" aria-hidden="true"></i> Project</a></li>
-  <li id="chartTab"><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
-</ul>
+
+  	  	 <li class="active"><a data-toggle="tab" href="#Overview"><i class="fa fa-eye" aria-hidden="true"></i> Overview</a></li>
+  	  	 <li id="proTab"><a data-toggle="tab" href="#Project"><i class="fa fa-users" aria-hidden="true"></i> Project</a></li>
+         <li id="chartTab"><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
+		</ul>
 
 <div class="tab-content">
   <div id="Overview" class="tab-pane fade in active">

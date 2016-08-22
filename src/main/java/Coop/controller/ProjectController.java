@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import Coop.mapper.FileMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
+import Coop.model.Active;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.service.UserService;
@@ -48,7 +48,6 @@ public class ProjectController {
     }
 	@RequestMapping(value = "/{id}/create.do",method = RequestMethod.POST)
 	 public String regist(@PathVariable String id,Project project,Model model) {
-		System.out.println(id);
 		project.setCreate_time(getCurrentDate());
 		projectMapper.insertProject(project);
 		Pro_User pro_user = new Pro_User();
@@ -97,9 +96,11 @@ public class ProjectController {
 	}
 	@RequestMapping(value="/search.do",method = RequestMethod.POST)
 	public String search(@RequestParam("search") String search,Model model){
-		System.out.println(search);
 		model.addAttribute("ProjectList",projectMapper.selectBySearch(search));
 		model.addAttribute("user",userService.getCurrentUser());
+		Active act = new Active();
+		act.setAct("active");
+		model.addAttribute("act",act);
 		return "layout/main/home";
 	}
 }

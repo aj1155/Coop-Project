@@ -2,7 +2,6 @@ package Coop.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import Coop.mapper.FileMapper;
+import Coop.mapper.InviteMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
+import Coop.mapper.UserMapper;
 import Coop.model.Active;
+import Coop.model.Invite;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.service.UserService;
@@ -32,6 +34,8 @@ public class ProjectController {
 	@Autowired UserService userService;
 	@Autowired FileMapper fileMapper;
 	@Autowired ProUserMapper proUserMapper;
+	@Autowired UserMapper userMapper;
+	@Autowired InviteMapper inviteMapper;
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -58,6 +62,44 @@ public class ProjectController {
 	   model.addAttribute("ProjectList",projectMapper.selectById(userService.getCurrentUser()));
        return "layout/main/home";
 	}
+	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
+	 public String goInfo(@PathVariable String id,Model model) {
+			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
+			model.addAttribute("project",project);
+			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
+			Pro_User pro = new Pro_User();
+			pro.setCont(1);
+			pro.setProId(project.getId());
+			pro.setUserId(userService.getCurrentUser().getId());
+			proUserMapper.updateCont(pro);
+			model.addAttribute("userList",userMapper.selectAll());
+			return "layout/project/info";
+	}
+	@RequestMapping(value="/search.do",method = RequestMethod.POST)
+	public String search(@RequestParam("search") String search,Model model){
+		model.addAttribute("ProjectList",projectMapper.selectBySearch(search));
+		model.addAttribute("user",userService.getCurrentUser());
+		Active act = new Active();
+		act.setAct("active");
+		model.addAttribute("act",act);
+		return "layout/main/home";
+	}
+	@RequestMapping(value="/{userId}/{projectId}/invite.do",method = RequestMethod.GET)
+	public String invite(@PathVariable String userId,@PathVariable String projectId,Model model){
+		
+		Invite invite = new Invite();
+		invite.setProjectId(Integer.parseInt(projectId));
+		invite.setSender(userService.getCurrentUser().getId());
+		invite.setRecipient(userId);
+		inviteMapper.insert(invite);
+		
+		return "redirect:" + "/project/"+projectId+"/proInfo.do";
+	}
+	
+	
+	
+
+	/*모바일 url*/
 	@ResponseBody
 	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.GET)
 	 public List<Project> ListDo(@PathVariable String id,HttpServletResponse response) {
@@ -79,28 +121,5 @@ public class ProjectController {
 		}
 		
 			
-	}
-	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
-	 public String goInfo(@PathVariable String id,Model model) {
-			System.out.println(id);
-			HashMap<String,Object> map = new HashMap<String,Object>();
-			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
-			model.addAttribute("project",project);
-			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
-			Pro_User pro = new Pro_User();
-			pro.setCont(1);
-			pro.setProId(project.getId());
-			pro.setUserId(userService.getCurrentUser().getId());
-			proUserMapper.updateCont(pro);
-			return "layout/project/info";
-	}
-	@RequestMapping(value="/search.do",method = RequestMethod.POST)
-	public String search(@RequestParam("search") String search,Model model){
-		model.addAttribute("ProjectList",projectMapper.selectBySearch(search));
-		model.addAttribute("user",userService.getCurrentUser());
-		Active act = new Active();
-		act.setAct("active");
-		model.addAttribute("act",act);
-		return "layout/main/home";
 	}
 }

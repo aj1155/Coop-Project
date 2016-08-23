@@ -68,10 +68,10 @@ color: #6ccaa5;}
         <div class="text-center">
         <c:if test="${user.img!=null}">
    			 <img id="user_img" src="/Coop/res/images/${user.id}.jpg" class="avatar img-circle" alt="avatar" style="height:200px; width:200px;"/>
-	  </c:if>
-      <c:if test="${user.img==null}">
+	    </c:if>
+       <c:if test="${user.img==null}">
       		 <img id="user_img" src="/Coop/res/images/null.jpg" class="avatar img-circle" alt="avatar" style="height:200px; width:200px;"/>
-      </c:if>
+       </c:if>
           <!--<img src="//placehold.it/100" class="avatar img-circle" alt="avatar">-->
           <h6>Upload a different photo...</h6>
           

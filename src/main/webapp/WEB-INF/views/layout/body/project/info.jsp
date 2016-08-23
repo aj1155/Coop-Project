@@ -9,7 +9,10 @@ $(function(){
 	});
 	$("li[data-url]").click(function() {
         location.href = $(this).attr("data-url");
- });
+ 	});
+	$("#inv").click(function() {
+        location.href = $(this).attr("data-url");
+ 	});
 });
 
 </script>
@@ -29,8 +32,9 @@ ul.mylist li, ol.mylist li {
 
 
 <h5>${project.owner } / ${project.name }</h5>
-<hr/>
 
+<hr/>
+<c:set var="userId"><sec:authentication property="user.id" /></c:set>
 <input type="hidden" id="user_id" value="<sec:authentication property="user.id" />">
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#work"><i class="fa fa-file-word-o" aria-hidden="true"></i> Work</a></li>
@@ -38,6 +42,9 @@ ul.mylist li, ol.mylist li {
   <li><a data-toggle="tab" href="#request"><i class="fa fa-refresh" aria-hidden="true"></i> Request</a></li>
   <li><a data-toggle="tab" href="#setting"><i class="fa fa-wrench" aria-hidden="true"></i> Settings</a></li>
   <li><a data-toggle="tab" href="#Public"><i class="fa fa-line-chart" aria-hidden="true"></i> Public</a></li>
+  <c:if test="${project.owner==userId}">
+  <li><a data-toggle="tab" href="#invite"><i class="fa fa-american-sign-language-interpreting" aria-hidden="true"></i> invite</a></li>
+  </c:if>
 </ul>
 
 <div class="tab-content">
@@ -64,7 +71,7 @@ ul.mylist li, ol.mylist li {
   
 	
     </div>
-    <hr/>
+   
    <div id="request" class="tab-pane fade">
     <h3>Request activity</h3>
     <p>Some content in menu 2.</p>
@@ -77,7 +84,30 @@ ul.mylist li, ol.mylist li {
     <h3>Public activity</h3>
     <p>Some content in menu 2.</p>
   </div>
+  <c:if test="${project.owner==userId}">
+   <div id="invite" class="tab-pane fade">
+    <h3>invite users</h3>
+    <ul class="mylist">
+    <c:forEach var="user" items="${userList}">
+    	  <c:if test="${user.img!=null}">
+   			 <span><img id="user_img" src="/Coop/res/images/${user.id}.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><h5> ${user.name}</h5></li>
+   			  <div class="pull-right action-buttons">
+   			  		<input id="inv" type="button" class="btn btn-info" value="Invite" data-url="/Coop/project/${user.id}/${project.id}/invite.do"/>
+              </div> 
+	      </c:if>
+   		  <c:if test="${user.img==null }">
+   		  	 <span><img id="user_img" src="/Coop/res/images/null.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><h5> ${user.name}</h5></li>
+   		  	 <div class="pull-right action-buttons">
+                    <input id="inv" type="button" class="btn btn-info" value="Invite" data-url="/Coop/project/${user.id}/${project.id}/invite.do"/>       
+             </div>  
+   		  </c:if>
+   		 <hr/>        
+    </c:forEach>
+    </ul>
   </div>
+  </c:if>
+  </div>
+  
   
  
 </sec:authorize>

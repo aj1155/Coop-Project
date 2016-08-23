@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,19 +54,7 @@ public class FileController {
 		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
         return "layout/file/detail";
     }
-	@ResponseBody
-	@RequestMapping(value = "/comment.do",method = RequestMethod.GET)
-	public List<Comment> comment(@RequestParam String fileId,Model model) {
-		return commentMapper.selectByFileId(Integer.parseInt(fileId));
-    }
-	@ResponseBody
-	@RequestMapping(value = "/fileList.do",method = RequestMethod.GET)
-	 public List<File> ListFile(@RequestParam String id,HttpServletResponse response) {
-		
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		return fileMapper.selectByProjectId(Integer.parseInt(id));	
-			
-	}
+	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.POST)
 	public String create(@PathVariable String projectId,@PathVariable String userId,@RequestParam("des") String des,
 			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException {
@@ -122,6 +111,35 @@ public class FileController {
 		
         
     }
+	/*모바일 url*/
+	@ResponseBody
+	@RequestMapping(value = "/commentList.do",method = RequestMethod.GET)
+	public List<Comment> comment(@RequestParam String fileId,Model model) {
+		return commentMapper.selectByFileId(Integer.parseInt(fileId));
+    }
+	@ResponseBody
+	@RequestMapping(value = "/fileList.do",method = RequestMethod.GET)
+	 public List<File> ListFile(@RequestParam String id,HttpServletResponse response) {
+		
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		return fileMapper.selectByProjectId(Integer.parseInt(id));	
+			
+	}
+	@ResponseBody
+	@RequestMapping(value = "/commentWrite.do",method = RequestMethod.POST)
+	public String commentList(@RequestParam String proId,@RequestParam String fileId,@RequestParam String text,Model model)  {
+		Comment comment = new Comment();
+		comment.setProjectId(Integer.parseInt(proId));
+		comment.setFileId(Integer.parseInt(fileId));
+		comment.setUserId(userService.getCurrentUser().getId());
+		comment.setContent(text);
+		
+		commentMapper.insert(comment);
+        return "success";
+		
+        
+    }
+	
 	
 
 }

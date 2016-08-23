@@ -48,13 +48,7 @@ public class HomeController {
 		@RequestMapping(value="/chart.do", method=RequestMethod.GET)
 	    public List<ChartData> chart(@RequestParam String id,HttpServletResponse response) {
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			
-			
 			List<ChartData> list = projectMapper.selectCont(id);
-			for(int i=0;i<list.size();i++)
-			{
-				System.out.println(list.get(i).getLegendText());
-			}
 			return list;
 	        
 	    }

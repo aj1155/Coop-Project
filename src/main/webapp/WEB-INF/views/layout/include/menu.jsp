@@ -10,7 +10,7 @@
             
                 <ul class="nav">
                     <li><a href="">MyTeam</a>
-                    <li><a href="">Request</a>
+                    <li><a href="">Me</a>
                 </ul>
                 
                 <ul class="nav pull-right">
@@ -19,12 +19,12 @@
                     </sec:authorize>
                     <sec:authorize access="authenticated">
                        	<li class="dropdown">
-                		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                			me<b class="caret"></b></a>
+                		<a href="#" class="badge1 dropdown-toggle" data-toggle="dropdown" data-badge="${inviteList[0].rowCount }">
+                			Request<b class="caret"></b></a>
                 		<ul class="dropdown-menu">
                 			<li><a href="">MyProfile</a>
                 			<li><a href="">Repository</a></li>
-                			<li><a href=""></a>Help</li>
+                			<li><a href="">Help</a></li>
                 		</ul>
                 	</li>
                         <li><a href="/Coop/home/logout.do">logout</a></li>

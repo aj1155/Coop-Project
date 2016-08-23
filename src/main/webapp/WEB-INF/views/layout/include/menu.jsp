@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
 <div class="navbar navbar-static-top">
@@ -22,9 +23,9 @@
                 		<a href="#" class="badge1 dropdown-toggle" data-toggle="dropdown" data-badge="${inviteList[0].rowCount }">
                 			Request<b class="caret"></b></a>
                 		<ul class="dropdown-menu">
-                			<li><a href="">MyProfile</a>
-                			<li><a href="">Repository</a></li>
-                			<li><a href="">Help</a></li>
+                		<c:forEach var="invite" items="${ inviteList }">
+                			<li><a href="">${invite.sender}님의 프로젝트 초대</a>
+                		</c:forEach>
                 		</ul>
                 	</li>
                         <li><a href="/Coop/home/logout.do">logout</a></li>

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import Coop.mapper.InviteMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.ChartData;
+import Coop.model.Invite;
 import Coop.model.User;
 import Coop.service.UserService;
 
@@ -26,23 +28,12 @@ public class HomeController {
 		@Autowired UserMapper userMapper;
 		@Autowired ProjectMapper projectMapper;
 		@Autowired UserService userService;
+		@Autowired InviteMapper inviteMapper;
 		
 		@RequestMapping(value="/index.do", method=RequestMethod.GET)
 	    public String index(Model model) {
 			System.out.println("조인");
 	        return "home";
-	    }
-		@ResponseBody
-		@RequestMapping(value="/loginProMobile.do", method=RequestMethod.POST)
-	    public String logMobile(@RequestBody String id,@RequestBody String password,Model model) {
-			
-			if(userMapper.loginProcess(id,userService.encryptPasswd(password))!=null){
-				return "success";
-			}
-			else{
-				return "fail";
-			}
-			
 	    }
 		@ResponseBody
 		@RequestMapping(value="/chart.do", method=RequestMethod.GET)
@@ -77,6 +68,30 @@ public class HomeController {
 		      
 		        return "home";
 		    }
+	    
+	    
+	    
+	    /*모바일 url*/
+	    @ResponseBody
+		@RequestMapping(value="/loginProMobile.do", method=RequestMethod.POST)
+	    public String logMobile(@RequestBody String id,@RequestBody String password,Model model) {
+			
+			if(userMapper.loginProcess(id,userService.encryptPasswd(password))!=null){
+				return "success";
+			}
+			else{
+				return "fail";
+			}
+			
+	    }
+	    @ResponseBody
+		@RequestMapping(value="/requestList.do", method=RequestMethod.GET)
+	    public List<Invite> requestList(@RequestParam String id) {
+			
+			
+	    	return inviteMapper.selectByRecipient(id);
+			
+	    }
 		
 
 }

@@ -20,11 +20,18 @@
                     </sec:authorize>
                     <sec:authorize access="authenticated">
                        	<li class="dropdown">
+                       	<c:if test="${inviteList[0].rowCount>0}">
                 		<a href="#" class="badge1 dropdown-toggle" data-toggle="dropdown" data-badge="${inviteList[0].rowCount }">
                 			Request<b class="caret"></b></a>
+                		</c:if>
+                		<c:if test = "${inviteList[0].rowCount<1}">
+                		<a href="#" class="badge1 dropdown-toggle" data-toggle="dropdown" data-badge="0">
+                			Request<b class="caret"></b></a>
+                		</c:if>
                 		<ul class="dropdown-menu">
                 		<c:forEach var="invite" items="${ inviteList }">
-                			<li><a href="">${invite.sender}님의 프로젝트 초대</a>
+                			<li><a href="/Coop/invite/${invite.projectId}/info.do">${invite.sender}님의 프로젝트 초대</a>
+                				 
                 		</c:forEach>
                 		</ul>
                 	</li>

@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -75,4 +77,46 @@ public class UserController {
 		 
 		 return "layout/main/home";
 	 }
+	 
+	 
+	 /*모바일 url*/
+	 	@ResponseBody
+		@RequestMapping(value="/registProMobile.do", method=RequestMethod.POST)
+	    public String regMobile(@RequestBody User user) {
+			
+	 		user.setPassword(userService.encryptPasswd(user.getPassword()));
+	        String message = userService.validateBeforeInsert(user);
+	        if (message == null) {
+	        	userMapper.insertUser(user);
+	        } else{
+	        	
+	        	return "message";
+	        }
+	        
+	        return "success";
+			
+	    }
+	 	
+	 	@ResponseBody
+	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
+		 public User edit(@RequestBody User user,
+			 @RequestBody MultipartFile uploadedFile) throws IOException {
+	 		 String id = userService.getCurrentUser().getId(); 
+	 		 user.setImg(id);
+			 
+			 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
+			 if(uploadedFile.getSize()>0){
+				 Image image = new Image();
+				 image.setUserId(id);
+				 image.setFileName(Paths.get(uploadedFile.getOriginalFilename()).getFileName().toString());
+				 System.out.println(image.getFileName());
+				 image.setFileSize((int)uploadedFile.getSize());
+				 image.setData(uploadedFile.getBytes());
+				 //imageMapper.insert(image);
+			 }
+			 userMapper.updateUserImage(user);
+			 
+			 return user;
+		 }
+		 
 }

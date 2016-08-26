@@ -28,7 +28,6 @@ public class LayoutController {
 		act.setAct(null);
 		model.addAttribute("class",act);
 		model.addAttribute("inviteList",inviteMapper.selectByRecipient(userService.getCurrentUser().getId()));
-        
 		return "layout/main/home";
     }
 	

@@ -13,6 +13,12 @@
     	INSERT INTO Invite(sender,recipient,projectId)
     	values(#{sender},#{recipient},#{projectId})
     </insert>
+    
+    <update id="updateConfirm" parameterType="hashmap">
+    	UPDATE INVITE
+    	SET confirm = 1
+    	where projectId = #{param.proId} and recipient = #{param.userId} 
+    </update>
 
 
 </mapper>

@@ -74,13 +74,13 @@ public class HomeController {
 	    /*모바일 url*/
 	    @ResponseBody
 		@RequestMapping(value="/loginProMobile.do", method=RequestMethod.POST)
-	    public String logMobile(@RequestBody String id,@RequestBody String password,Model model) {
+	    public User logMobile(@RequestBody String id,@RequestBody String password,Model model) {
 			
 			if(userMapper.loginProcess(id,userService.encryptPasswd(password))!=null){
-				return "success";
+				return userService.getCurrentUser();
 			}
 			else{
-				return "fail";
+				return null;
 			}
 			
 	    }

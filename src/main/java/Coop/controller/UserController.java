@@ -104,7 +104,7 @@ public class UserController {
 	 	@ResponseBody
 	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
 		 public User edit(@RequestParam String password,@RequestParam String email,
-			 @RequestBody MultipartFile uploadedFile) throws IOException {
+			 @RequestParam MultipartFile uploadedFile) throws IOException {
 	 		 User user = new User();
 	 		 String id = userService.getCurrentUser().getId();
 	 		 user.setId(id);
@@ -113,7 +113,7 @@ public class UserController {
 	 		 user.setImg(id);
 			 
 			 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
-			 if(uploadedFile.getSize()>0){
+			 if(uploadedFile.getSize()>0 && uploadedFile!=null){
 				 Image image = new Image();
 				 image.setUserId(id);
 				 image.setFileName(Paths.get(uploadedFile.getOriginalFilename()).getFileName().toString());

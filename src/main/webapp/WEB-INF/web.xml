@@ -39,6 +39,19 @@
             /WEB-INF/spring-security.xml
         </param-value>
     </context-param>
+    
+    <!-- mutipart -->
+    <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        classpath:dispatcherServlet.xml     
+    </param-value>
+  	</context-param>
+  	<listener>
+  	  	<display-name>ContextLoader</display-name>
+    	<listener-class>org.springframework.web.context.ContextLoaderListener
+    	</listener-class>
+    </listener>
 
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>

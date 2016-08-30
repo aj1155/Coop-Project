@@ -29,6 +29,8 @@
         SET img = #{img}
         WHERE id = #{id}
     </update>
+    
+    
 
 </mapper>
              

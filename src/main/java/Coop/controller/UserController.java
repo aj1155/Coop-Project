@@ -79,12 +79,16 @@ public class UserController {
 	 }
 	 
 	 
-	 /*모바일 url*/
+	 	/*모바일 url*/
 	 	@ResponseBody
 		@RequestMapping(value="/registProMobile.do", method=RequestMethod.POST)
-	    public String regMobile(@RequestBody User user) {
+	    public String regMobile(@RequestParam String password,@RequestParam String name,@RequestParam String email,@RequestParam String id) {
 			
-	 		user.setPassword(userService.encryptPasswd(user.getPassword()));
+	 		User user = new User();
+	 		user.setId(id);
+	 		user.setEmail(email);
+	 		user.setName(name);
+	 		user.setPassword(userService.encryptPasswd(password));
 	        String message = userService.validateBeforeInsert(user);
 	        if (message == null) {
 	        	userMapper.insertUser(user);
@@ -99,9 +103,13 @@ public class UserController {
 	 	
 	 	@ResponseBody
 	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
-		 public User edit(@RequestBody User user,
+		 public User edit(@RequestParam String password,@RequestParam String email,
 			 @RequestBody MultipartFile uploadedFile) throws IOException {
-	 		 String id = userService.getCurrentUser().getId(); 
+	 		 User user = new User();
+	 		 String id = userService.getCurrentUser().getId();
+	 		 user.setId(id);
+	 		 user.setEmail(email);
+	 		 user.setPassword(userService.encryptPasswd(password));
 	 		 user.setImg(id);
 			 
 			 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
@@ -115,7 +123,6 @@ public class UserController {
 				 //imageMapper.insert(image);
 			 }
 			 userMapper.updateUserImage(user);
-			 
 			 return user;
 		 }
 		 

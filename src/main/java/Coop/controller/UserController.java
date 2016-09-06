@@ -112,7 +112,7 @@ public class UserController {
 	 		 user.setPassword(userService.encryptPasswd(password));
 	 		 user.setImg(id);
 			 
-			 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
+			 
 			 if(uploadedFile.getSize()>0 && uploadedFile!=null){
 				 Image image = new Image();
 				 image.setUserId(id);
@@ -121,8 +121,10 @@ public class UserController {
 				 image.setFileSize((int)uploadedFile.getSize());
 				 image.setData(uploadedFile.getBytes());
 				 //imageMapper.insert(image);
+				 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
+				 userMapper.updateUserImage(user);
 			 }
-			 userMapper.updateUserImage(user);
+			
 			 return user;
 		 }
 		 

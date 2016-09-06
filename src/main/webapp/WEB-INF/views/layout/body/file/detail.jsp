@@ -7,15 +7,28 @@ $(function(){
 	$('#down').click(function(){
 		location.href = $(this).attr("data-url");
 	});
+	$('#new_file').click(function(){
+		location.href = "/Coop/file/"+${project.id}+"/"+$('#user_id').val()+"/"+$('#file_id').val()+"/create2.do"
+	});
 });
 </script>
 
 
 <sec:authorize access="authenticated">
 
-
+<input type="hidden" id="user_id" value="<sec:authentication property="user.id" />">
+<input type="hidden" id="file_id" value="${file.id }">
 <h5><sec:authentication property="user.id" /> / ${project.name }</h5>
 <hr/>
+<div class="filter-bar">
+    <form accept-charset="UTF-8" action="/Coop/file/search.do" class="d-inline" method="POST" role="search">
+    <!--<input type="hidden" name="user" value="<sec:authentication property="user.name" />">-->
+    <input type="text" id="your-repos-filter" name="search" style="width:320px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
+    <input type="submit" style="margin-bottom:10px;" value="Search" class="btn">
+	<input type="button" id="new_file" style="margin-bottom:10px;" value="Upload File" class="btn pull-right btn-success">
+	</form>
+	
+    </div>
 <div class="container">
 				<div class="row">
 				<div class="col-md-12 col-sm-12">
@@ -28,6 +41,7 @@ $(function(){
                         </div>
                         <div class="panel-footer">
                             <img id="user_img" src="/Coop/res/images/${file.userId}.jpg" class="avatar img-circle" alt="avatar" style="height:40px; width:40px;"/><span style="font-weight:bold"> ${file.userId }</span>
+                        	
                         </div>
                     </div>
                 </div>
@@ -41,6 +55,9 @@ $(function(){
                         </div>
                         <div class="panel-body">
                             <p>Change File Contents...</p>
+                            <c:forEach var="png" items="${ pngs }">
+                            	<img id="user_img" src="/Coop/res/FileSave/${file.fileName}/${png.src}" class="avatar img-circle" alt="avatar" style="height:500px; width:500px;"/>
+                        	</c:forEach>
                         </div>
                         <div class="panel-footer">
      <ul class="media-list comments">

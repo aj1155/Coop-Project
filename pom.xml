@@ -82,6 +82,14 @@
 		</dependency>
      	
      	
+     	<!-- pdf -->
+     	<dependency>
+		    <groupId>com.kenai.nbpwr</groupId>
+		    <artifactId>com-sun-pdfview</artifactId>
+		    <version>1.0.5-201003191900</version>
+		    <type>nbm</type>
+		</dependency>
+     	
      	<!-- security -->
     	<dependency>
             <groupId>org.springframework</groupId>

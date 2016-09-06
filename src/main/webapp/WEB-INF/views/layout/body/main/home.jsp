@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>이것은 제목</title>
+<title>Coop</title>
 <script>
 	$(function(){
 		$("#new_pro").click(function(){

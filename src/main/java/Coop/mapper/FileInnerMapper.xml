@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Coop.mapper.FileInnerMapper">
+	
+	<select id="selectById" resultType="Coop.model.FileInner">
+       SELECT *
+        FROM   FileInner
+        WHERE  id = #{id}
+    </select>
+    <select id="selectByProjectId" resultType="Coop.model.FileInner">
+        SELECT id, projectId, userId, fileName, fileSize, fileTime
+        FROM   FileInner
+        WHERE  projectId = #{projectId}
+    </select>
+
+    <select id="selectByUserId" resultType="Coop.model.FileInner">
+        SELECT *
+        FROM   FileInner
+        WHERE  userId = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO FileInner (projectId, userId,refFile,fileName, fileSize, fileTime, data,des)
+        VALUES (#{projectId}, #{userId},#{refFile} ,#{fileName}, #{fileSize}, NOW(), #{data},#{des})
+    </insert>
+
+    
+</mapper>

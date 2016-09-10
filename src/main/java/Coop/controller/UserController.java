@@ -127,5 +127,13 @@ public class UserController {
 			
 			 return user;
 		 }
+	 	
+	 	@ResponseBody
+	 	@RequestMapping(value="/mobileUserInfo.do", method = RequestMethod.GET)
+		 public User info(@RequestParam String id) throws IOException {
+	 		 User user = userMapper.selectById(id);
+			
+			 return user;
+		 }
 		 
 }

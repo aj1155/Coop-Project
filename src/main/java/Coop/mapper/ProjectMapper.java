@@ -17,4 +17,5 @@ public interface ProjectMapper {
 	List<Project> selectBySearch(String search);
 	Project selectByProjectId(int id);
 	List<ChartData> selectCont(String userId);
+	void update(Project project);
 }

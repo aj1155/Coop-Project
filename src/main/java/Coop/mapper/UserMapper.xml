@@ -14,6 +14,8 @@
     	WHERE ID = #{id}
     </select>
     
+    
+    
     <select id="loginProcess" parameterType = "String" resultType = "Coop.model.User">
     	SELECT * FROM User
     	WHERE ID = #{id} and Password = #{password}

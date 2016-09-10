@@ -47,6 +47,12 @@
     	INSERT INTO pro_user
     	values(#{userId},#{proId})
     </insert>
+    
+    <update id="update">
+        UPDATE Project 
+        SET name = #{name},owner = #{owner},des = #{des}
+        WHERE id = #{id}
+    </update>
 
 </mapper>
              

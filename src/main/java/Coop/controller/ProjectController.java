@@ -21,6 +21,7 @@ import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Active;
+import Coop.model.ChartData;
 import Coop.model.Invite;
 import Coop.model.Pro_User;
 import Coop.model.Project;
@@ -42,7 +43,9 @@ public class ProjectController {
     public static String getCurrentDate() {
         return format.format(new Date());
     }
-
+    
+    
+    
 	
 	@RequestMapping(value = "/{id}/create.do",method = RequestMethod.GET)
 	 public String create(@PathVariable String id,Model model) {
@@ -62,6 +65,16 @@ public class ProjectController {
 	   model.addAttribute("ProjectList",projectMapper.selectById(userService.getCurrentUser()));
        return "layout/main/home";
 	}
+	@RequestMapping(value = "/edit.do",method = RequestMethod.POST)
+	 public String edit(Project project,Model model) {
+		projectMapper.update(project);
+		model.addAttribute("project",projectMapper.selectByProjectId(project.getId()));
+		model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
+		model.addAttribute("userList",userMapper.selectAll());
+		model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
+		return "layout/project/info";
+		
+	}
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
 	 public String goInfo(@PathVariable String id,Model model) {
 			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
@@ -73,6 +86,7 @@ public class ProjectController {
 			pro.setUserId(userService.getCurrentUser().getId());
 			proUserMapper.updateCont(pro);
 			model.addAttribute("userList",userMapper.selectAll());
+			model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
 			return "layout/project/info";
 	}
 	@RequestMapping(value="/search.do",method = RequestMethod.POST)
@@ -86,17 +100,24 @@ public class ProjectController {
 	}
 	@RequestMapping(value="/{userId}/{projectId}/invite.do",method = RequestMethod.GET)
 	public String invite(@PathVariable String userId,@PathVariable String projectId,Model model){
-		
+		System.out.println("inv");
 		Invite invite = new Invite();
 		invite.setProjectId(Integer.parseInt(projectId));
 		invite.setSender(userService.getCurrentUser().getId());
 		invite.setRecipient(userId);
 		inviteMapper.insert(invite);
-		
+		model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
 		return "redirect:" + "/project/"+projectId+"/proInfo.do";
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping(value="/chart.do", method=RequestMethod.GET)
+    public List<ChartData> chart(@RequestParam String id,HttpServletResponse response) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		List<ChartData> list = proUserMapper.selectCont(Integer.parseInt(id));
+		return list;
+        
+    }
 	
 
 	/*모바일 url*/

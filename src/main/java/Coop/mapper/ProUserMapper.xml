@@ -20,6 +20,16 @@
     	INSERT INTO pro_user(userId,projectId)
     	values(#{userId},#{proId})
     </insert>
+    <select id="selectByProjectId" resultType = "Coop.model.User">
+    	SELECT u.*
+    	from Pro_user p join User u on p.userId = u.id
+    	WHERE projectId = #{id}
+    </select>
+    <select id="selectCont" resultType = "Coop.model.ChartData">
+    	select u.name 'legendText', pro.cont 'y'
+		from pro_user pro join user u on pro.userId = u.id
+		where pro.projectId = #{id}
+    </select>
 
 </mapper>
              

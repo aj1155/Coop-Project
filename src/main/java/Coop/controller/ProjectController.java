@@ -25,6 +25,7 @@ import Coop.model.ChartData;
 import Coop.model.Invite;
 import Coop.model.Pro_User;
 import Coop.model.Project;
+import Coop.model.User;
 import Coop.service.UserService;
 
 @Controller
@@ -130,6 +131,13 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
+	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.GET)
+	 public List<User> member(@PathVariable String id,HttpServletResponse response) {
+			
+			return proUserMapper.selectByProjectId(Integer.parseInt(id));
+			
+	}
+	@ResponseBody
 	@RequestMapping(value = "/proList.do",method = RequestMethod.POST)
 	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
 		if(userService.getCurrentUser().getId().equals(id))
@@ -142,5 +150,23 @@ public class ProjectController {
 		}
 		
 			
+	}
+	 @RequestMapping(value = "/edit.do",method = RequestMethod.POST)
+	 public String editMobile(@RequestParam String id,@RequestParam String owner,@RequestParam String des ,
+			 Model model,@RequestParam String name) {
+		Project project = new Project();
+		project.setId(Integer.parseInt(id));
+		project.setDes(des);
+		project.setName(name);
+		project.setOwner(owner);
+		if(project.getName()==null || project.getName().isEmpty()){
+			return "check Project Name";
+		}
+		if(project.getOwner()==null || project.getOwner().isEmpty()){
+			return "check Owner Name";
+		}
+		
+		return "success";
+		
 	}
 }

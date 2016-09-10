@@ -131,7 +131,7 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
-	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}/memberList.do",method = RequestMethod.GET)
 	 public List<User> member(@PathVariable String id,HttpServletResponse response) {
 			
 			return proUserMapper.selectByProjectId(Integer.parseInt(id));
@@ -151,7 +151,7 @@ public class ProjectController {
 		
 			
 	}
-	 @RequestMapping(value = "/edit.do",method = RequestMethod.POST)
+	 @RequestMapping(value = "/mobileEdit.do",method = RequestMethod.POST)
 	 public String editMobile(@RequestParam String id,@RequestParam String owner,@RequestParam String des ,
 			 Model model,@RequestParam String name) {
 		Project project = new Project();

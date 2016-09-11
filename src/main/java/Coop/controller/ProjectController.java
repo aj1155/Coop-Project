@@ -131,7 +131,7 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
-	@RequestMapping(value = "/{id}/memberList.do",method = RequestMethod.GET)
+	@RequestMapping(value = "/memberList.do",method = RequestMethod.GET)
 	 public List<User> member(@PathVariable String id,HttpServletResponse response) {
 			
 			return proUserMapper.selectByProjectId(Integer.parseInt(id));

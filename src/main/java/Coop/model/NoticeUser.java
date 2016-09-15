@@ -2,8 +2,19 @@ package Coop.model;
 
 public class NoticeUser {
 	int id;
-	int member;
-	boolean confirm;
+	String member;
+	int projectId;
+	boolean confirm = false;
+	
+	public int getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
+	}
+
+	
 
 	public int getId() {
 		return id;
@@ -13,11 +24,11 @@ public class NoticeUser {
 		this.id = id;
 	}
 
-	public int getMember() {
+	public String getMember() {
 		return member;
 	}
 
-	public void setMember(int member) {
+	public void setMember(String member) {
 		this.member = member;
 	}
 

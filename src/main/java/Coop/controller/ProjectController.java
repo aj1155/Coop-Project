@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import Coop.mapper.FileMapper;
 import Coop.mapper.InviteMapper;
+import Coop.mapper.NoticeMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Active;
 import Coop.model.ChartData;
 import Coop.model.Invite;
+import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.model.User;
@@ -38,6 +40,7 @@ public class ProjectController {
 	@Autowired ProUserMapper proUserMapper;
 	@Autowired UserMapper userMapper;
 	@Autowired InviteMapper inviteMapper;
+	@Autowired NoticeMapper noticeMapper;
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -79,15 +82,21 @@ public class ProjectController {
 	@RequestMapping(value = "/{id}/proInfo.do",method = RequestMethod.GET)
 	 public String goInfo(@PathVariable String id,Model model) {
 			Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
-			model.addAttribute("project",project);
-			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			Pro_User pro = new Pro_User();
+			NoticeUser noticeUser=  new NoticeUser();
 			pro.setCont(1);
 			pro.setProId(project.getId());
 			pro.setUserId(userService.getCurrentUser().getId());
 			proUserMapper.updateCont(pro);
+			noticeUser.setProjectId(project.getId());
+			noticeUser.setMember(userService.getCurrentUser().getId());
+			model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+			model.addAttribute("project",project);
+			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			model.addAttribute("userList",userMapper.selectAll());
 			model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
+			
+			
 			return "layout/project/info";
 	}
 	@RequestMapping(value="/search.do",method = RequestMethod.POST)

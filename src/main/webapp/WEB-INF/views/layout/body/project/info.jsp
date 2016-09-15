@@ -102,7 +102,7 @@ label {
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#work"><i class="fa fa-file-word-o" aria-hidden="true"></i> Work</a></li>
   <li><a data-toggle="tab" href="#problem"><i class="fa fa-users" aria-hidden="true"></i> Member</a></li>
-  <li><a data-toggle="tab" href="#request"><i class="fa fa-refresh" aria-hidden="true"></i> Request</a></li>
+  <li><a data-toggle="tab" href="#request"><i class="fa fa-refresh" aria-hidden="true"></i> Request <span style="color:red;">${noticeList.size()}</span></a></li>
   <c:if test="${project.owner==userId}">
   <li><a data-toggle="tab" href="#setting"><i class="fa fa-wrench" aria-hidden="true"></i> Settings</a></li>
   </c:if>
@@ -160,10 +160,24 @@ label {
    
    <div id="request" class="tab-pane fade">
     <h3>Request activity</h3>
-    <p>Some content in menu 2.</p>
+    <c:if test="${noticeList.size()>0}">
+    <ul class="mylist">
+    <c:forEach var="notice" items="${noticeList}">
+     <span><img id="notice_img" src="/Coop/res/images/notice.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><h5> ${notice.des}</h5>
+   		  </li>
+    	  
+   		 <div class="pull-right action-buttons">
+   			<input id="inv" type="button" class="btn btn-success" value="GO" data-url="/Coop/file/${notice.id}/${project.id}/${notice.fileId}/detailCheck.do"/>
+         </div> 
+	      
+   		 
+   		 <hr/>        
+    </c:forEach>
+    </ul>
+    </c:if>
   </div>
    <div id="setting" class="tab-pane fade"  style="font-family: 'Lato', sans-serif;" >
-    	  
+     
 
            
 

@@ -5,6 +5,17 @@ public class Notice {
 	String userId;
 	int projectId;
 	String des;
+	int fileId;
+	
+	
+
+	public int getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(int fileId) {
+		this.fileId = fileId;
+	}
 
 	public int getId() {
 		return id;

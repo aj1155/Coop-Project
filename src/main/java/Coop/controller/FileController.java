@@ -3,6 +3,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,8 @@ import Coop.mapper.CommentMapper;
 import Coop.mapper.FileInnerMapper;
 import Coop.mapper.FileMapper;
 import Coop.mapper.FilePngCountMapper;
+import Coop.mapper.NoticeMapper;
+import Coop.mapper.NoticeUserMapper;
 import Coop.mapper.PngFilesMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
@@ -29,6 +32,8 @@ import Coop.model.Comment;
 import Coop.model.File;
 import Coop.model.FileInner;
 import Coop.model.FilePngCount;
+import Coop.model.Notice;
+import Coop.model.NoticeUser;
 import Coop.model.PngFiles;
 import Coop.model.Pro_User;
 import Coop.model.Project;
@@ -55,6 +60,8 @@ public class FileController {
 	@Autowired PngFilesMapper pngFilesMapper;
 	@Autowired FilePngCountMapper filePngCountMapper;
 	@Autowired PPTChange pptChange;
+	@Autowired NoticeMapper noticeMapper;
+	@Autowired NoticeUserMapper noticeUserMapper;
 	
 	
 	
@@ -85,20 +92,40 @@ public class FileController {
 		model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
         return "layout/file/detail";
     }
+	@RequestMapping(value = "{noticeId}/{fileId}/{proId}/detailCheck.do",method = RequestMethod.GET)
+	public String detailCheck(@PathVariable String fileId,@PathVariable String proId,
+			@PathVariable String noticeId,Model model) {
+		
+		NoticeUser noticeUser = new NoticeUser();
+		noticeUser.setMember(userService.getCurrentUser().getId());
+		noticeUser.setId(Integer.parseInt(noticeId));
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		map.put("param",noticeUser);
+		
+		noticeUserMapper.updateConfirm(map);
+		
+		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(proId)));
+		model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
+		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
+		model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
+        return "layout/file/detail";
+    }
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.POST)
 	public String create(@PathVariable String projectId,@PathVariable String userId,@RequestParam("des") String des,
 			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException {
 		String user = userId;
 		String project = projectId;
+		Notice notice = new Notice();
 		Pro_User pro = new Pro_User();
 		pro.setCont(3);
 		pro.setProId(Integer.parseInt(projectId));
 		pro.setUserId(userId);
 		proUserMapper.updateCont(pro);
+		File file = new File();
 		if(uploadedFile.getSize()>0){
 			 
-			 File file = new File();
+			 
 			 file.setUserId(user);
 			 file.setProjectId(Integer.parseInt(project));
 			 file.setFileName(Paths.get(uploadedFile.getOriginalFilename()).getFileName().toString());
@@ -123,7 +150,27 @@ public class FileController {
 			 }
 			 
 		}
+		notice.setProjectId(Integer.parseInt(projectId));
+		notice.setUserId(userService.getCurrentUser().getId());
+		String noDes = userService.getCurrentUser().getName()+"님이 "+"새로운 파일을 업로드 했습니다";
+		notice.setDes(noDes);
+		notice.setFileId(file.getId());
+		noticeMapper.insert(notice);
 		
+		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+		
+		for(int i=0;i<proUser.size();i++){
+			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+				NoticeUser noticeUser = new NoticeUser();
+				noticeUser.setId(notice.getId());
+				noticeUser.setProjectId(Integer.parseInt(projectId));
+				noticeUser.setMember(proUser.get(i).getId());
+				
+				noticeUserMapper.insert(noticeUser);
+			}
+			
+					
+		}
 		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(project)));
 		model.addAttribute("fileList",fileMapper.selectByProjectId(Integer.parseInt(project)));
         return "layout/project/info";
@@ -134,7 +181,7 @@ public class FileController {
 			@RequestParam("file") MultipartFile uploadedFile,Model model,@PathVariable String fileId) throws IOException {
 		List<FileInner> fileInner = fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId));
 		
-		
+		Notice notice = new Notice();
 		if(fileInner.size()<1){
 			String user = userId;
 			String project = projectId;
@@ -239,6 +286,27 @@ public class FileController {
 				png[i].setSrc(result[i]);
 				pngFilesMapper.insert(png[i]);
 			}
+			
+			notice.setProjectId(Integer.parseInt(projectId));
+			notice.setUserId(userService.getCurrentUser().getId());
+			String noDes = userService.getCurrentUser().getName()+"님이 "+"새로운 파일을 업로드 했습니다";
+			notice.setDes(noDes);
+			notice.setFileId(resFile.getId());
+			noticeMapper.insert(notice);
+			List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+			
+			for(int i=0;i<proUser.size();i++){
+				if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+					NoticeUser noticeUser = new NoticeUser();
+					noticeUser.setId(notice.getId());
+					noticeUser.setProjectId(Integer.parseInt(projectId));
+					noticeUser.setMember(proUser.get(i).getId());
+					
+					noticeUserMapper.insert(noticeUser);
+				}
+				
+						
+			}
 			model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(project)));
 			model.addAttribute("fileList",fileMapper.selectByProjectId(Integer.parseInt(project)));
 	        return "layout/project/info";
@@ -265,13 +333,34 @@ public class FileController {
 	@RequestMapping(value = "/{proId}/{fileId}/comment.do",method = RequestMethod.POST)
 	public String comment(@PathVariable String proId,@PathVariable String fileId,@RequestParam String text,Model model)  {
 		Comment comment = new Comment();
+		Notice notice = new Notice();
 		comment.setProjectId(Integer.parseInt(proId));
 		comment.setFileId(Integer.parseInt(fileId));
 		comment.setUserId(userService.getCurrentUser().getId());
 		comment.setContent(text);
-		
+		File file = fileMapper.selectById(Integer.parseInt(fileId));
+		notice.setProjectId(Integer.parseInt(proId));
+		notice.setUserId(userService.getCurrentUser().getId());
+		String des = userService.getCurrentUser().getName()+"님이 "+file.getFileName()+" 파일에 댓글을 남겼습니다";
+		notice.setDes(des);
+		notice.setFileId(file.getId());
+		noticeMapper.insert(notice);
 		commentMapper.insert(comment);
-
+		
+		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(proId));
+		
+		for(int i=0;i<proUser.size();i++){
+			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+				NoticeUser noticeUser = new NoticeUser();
+				noticeUser.setId(notice.getId());
+				noticeUser.setProjectId(Integer.parseInt(proId));
+				noticeUser.setMember(proUser.get(i).getId());
+				
+				noticeUserMapper.insert(noticeUser);
+			}
+			
+					
+		}
 		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(proId)));
 		model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
 		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
@@ -302,6 +391,31 @@ public class FileController {
 			  model.addAttribute("project",project);
 			  model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			  return "layout/project/info";
+		  }
+		
+        
+    }
+	@RequestMapping(value = "{commentId}/{projectId}/{fileId}/commentDelete.do",method = RequestMethod.GET)
+	public String commentDelete(@PathVariable String fileId,Model model,@PathVariable String projectId,
+			@PathVariable String commentId) throws IOException {
+		  Comment comment = commentMapper.selectById(Integer.parseInt(commentId));
+		  File file = fileMapper.selectById(Integer.parseInt(fileId));
+		  User user = userService.getCurrentUser();
+		  Project project = projectMapper.selectByProjectId(Integer.parseInt(projectId));
+		  if(user.getId().equals(comment.getUserId())){
+			    commentMapper.delete(Integer.parseInt(commentId));
+			    model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
+				model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
+				model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
+		        return "layout/file/detail";
+		  }
+		  else{
+			    model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
+				model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
+				model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
+		        return "layout/file/detail";
 		  }
 		
         

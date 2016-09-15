@@ -12,6 +12,7 @@
     	where userId = #{id})
     </select>
     
+    
     <select id="selectById2" resultType = "Coop.model.Project">
     	SELECT * FROM Project
     	WHERE id in(SELECT projectId

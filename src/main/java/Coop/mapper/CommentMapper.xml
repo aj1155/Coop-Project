@@ -23,7 +23,12 @@
     	INSERT INTO COMMENT(projectId,fileId,userId,writeTime,content)
     	values(#{projectId},#{fileId},#{userId},NOW(),#{content})
     </insert>
-    
+   	
+   	<delete id ="delete" parameterType = "int">
+   		delete
+   		from comment
+   		where id = #{id}
+   	</delete> 
    
 
 </mapper>

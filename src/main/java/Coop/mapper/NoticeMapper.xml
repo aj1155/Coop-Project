@@ -2,16 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
              "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
              
-<mapper namespace="Coop.mapper.InviteMapper">
+<mapper namespace="Coop.mapper.NoticeMapper">
 	
-	<select id="selectByRecipient" resultType = "Coop.model.Notice">
-    	SELECT *,count(*) 'rowCount' FROM INVITE
-    	WHERE recipient = #{recipient} and confirm = 0;
+	<select id="selectByProjectId" resultType = "Coop.model.Notice">
+    	SELECT *
+    	FROM NOTICE
+    	WHERE PROJECTID = #{ID}
+    </select>
+    
+    <select id = "select" resultType = "Coop.model.Notice">
+    	select *
+		from notice
+		where id in(select id
+					from notice_user
+					where member = #{member} and confirm = 0 and projectId = #{projectId});
+    	
     </select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO Notice(userId,userId,projectId,des)
-    	values(#{userId},#{projectId},#{des})
+    	INSERT INTO Notice(userId,projectId,des,notice_time,fileId)
+    	values(#{userId},#{projectId},#{des},now(),#{fileId})
     </insert>
     
     <update id="updateConfirm" parameterType="hashmap">

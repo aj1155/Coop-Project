@@ -18,6 +18,7 @@ $(function(){
 
 <input type="hidden" id="user_id" value="<sec:authentication property="user.id" />">
 <input type="hidden" id="file_id" value="${file.id }">
+<c:set var="userId"><sec:authentication property="user.id" /></c:set>
 <h5><sec:authentication property="user.id" /> / ${project.name }</h5>
 <hr/>
 <div class="filter-bar">
@@ -71,6 +72,9 @@ $(function(){
           <div class="comment-info pull-left">
             <div class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Sent from ***0.0.1"><i class="fa fa-user"></i></div>
             <div class="btn btn-primary btn-xs"><a class="fa fa-envelope white" href="mailto:loneswan@loneswan.net"></a></div>
+            <c:if test="${comment.userId==userId}">
+            <div class="btn btn-xs"><a class="fa fa-trash-o" href="/Coop/file/${comment.id}/${project.id}/${file.id}/commentDelete.do"></a></div>
+            </c:if>
             <div class="btn btn-default btn-xs"><i class="fa fa-clock-o"></i> Posted 3 days ago</div>
           </div>
           <br class="clearfix">

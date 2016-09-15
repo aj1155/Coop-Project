@@ -21,11 +21,24 @@
         FROM   FileInner
         WHERE  userId = #{userId}
     </select>
+    
+    <select id="selectByRefFileId" resultType="Coop.model.FileInner">
+       SELECT *
+        FROM   FileInner
+        WHERE  refFile = #{id}
+        order by fileTime desc
+    </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO FileInner (projectId, userId,refFile,fileName, fileSize, fileTime, data,des)
         VALUES (#{projectId}, #{userId},#{refFile} ,#{fileName}, #{fileSize}, NOW(), #{data},#{des})
     </insert>
+    
+    <delete id="delete" parameterType = "int" >
+    	delete 
+    	from fileInner
+    	where refFile = #{id};
+    </delete>
 
     
 </mapper>

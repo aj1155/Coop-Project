@@ -8,4 +8,5 @@ public interface FileMapper {
 	File selectById(int id);
 	List<File> selectByUserId(String userId);
 	void insert(File file);
+	void delete(int id);
 }

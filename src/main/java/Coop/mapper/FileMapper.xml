@@ -26,6 +26,11 @@
         INSERT INTO File (projectId, userId, fileName, fileSize, fileTime, data,des)
         VALUES (#{projectId}, #{userId}, #{fileName}, #{fileSize}, NOW(), #{data},#{des})
     </insert>
-
+    
+    <delete id="delete" parameterType = "int" >
+    	delete 
+    	from file
+    	where id = #{id};
+    </delete>
     
 </mapper>

@@ -7,6 +7,7 @@ public interface PngFilesMapper {
 	List<PngFiles> selectById(int id);
 	List<PngFiles> selectByFileId(int fileId);
 	void insert(PngFiles pngFiles);
+	void delete(int id);
 	
 
 }

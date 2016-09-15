@@ -127,7 +127,13 @@ label {
     <h3>Work</h3>
     <ul class="mylist">
     <c:forEach var="file" items="${ fileList }">
-   		 <span><i class="fa fa-file" aria-hidden="true"></i></span>&nbsp&nbsp<li id="pList" data-url="/Coop/file/${file.id}/${project.id}/detail.do"><h5> ${file.fileName}</h5></li> 
+   		 <span><i class="fa fa-file" aria-hidden="true"></i></span>&nbsp&nbsp<li id="pList" data-url="/Coop/file/${file.id}/${project.id}/detail.do"><h5> ${file.fileName}</h5>
+   		 </li>
+   		 <c:if test="${file.userId==userId}">
+   		 <div class="pull-right action-buttons">
+   			  <input id="inv" type="button" class="btn btn-info" value="Delete" data-url="/Coop/file/${project.id}/${file.id}/delete.do"/>
+         </div> 
+         </c:if> 
    		 <hr/>        
     </c:forEach>
     </ul>

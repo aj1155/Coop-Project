@@ -21,6 +21,12 @@
         INSERT INTO PngFiles (fileId,src,create_time)
         VALUES (#{fileId},#{src},now())
     </insert>
+    
+    <delete id="delete" parameterType = "int" >
+    	delete 
+    	from pngfiles
+    	where fileId = #{id};
+    </delete>
 
     
 </mapper>

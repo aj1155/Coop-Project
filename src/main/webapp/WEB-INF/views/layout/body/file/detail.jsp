@@ -10,6 +10,9 @@ $(function(){
 	$('#new_file').click(function(){
 		location.href = "/Coop/file/"+${project.id}+"/"+$('#user_id').val()+"/"+$('#file_id').val()+"/create2.do"
 	});
+	$('#btn').click(function(){
+		location.href = $(this).attr("data-url");
+	});
 });
 </script>
 
@@ -27,6 +30,7 @@ $(function(){
     <input type="text" id="your-repos-filter" name="search" style="width:320px;height:30px;" class="form-control js-filterable-field" placeholder="Find a repository&hellip;" aria-label="Filter your repositories by name" >
     <input type="submit" style="margin-bottom:10px;" value="Search" class="btn">
 	<input type="button" id="new_file" style="margin-bottom:10px;" value="Upload File" class="btn pull-right btn-success">
+	<input type="button" id="btn" style="margin-bottom:10px; margin-right:10px;" value="FileHistory" class="btn pull-right btn-success" data-url="/Coop/file/${file.id }/history.do" />
 	</form>
 	
     </div>

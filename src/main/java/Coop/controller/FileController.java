@@ -171,8 +171,14 @@ public class FileController {
 			
 					
 		}
-		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(project)));
-		model.addAttribute("fileList",fileMapper.selectByProjectId(Integer.parseInt(project)));
+		NoticeUser noticeUser=  new NoticeUser();
+		noticeUser.setProjectId(Integer.parseInt(projectId));
+		noticeUser.setMember(userService.getCurrentUser().getId());
+		model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("userList",userMapper.selectProject(Integer.parseInt(projectId)));
+		model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
         return "layout/project/info";
     }
 	
@@ -307,8 +313,14 @@ public class FileController {
 				
 						
 			}
-			model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(project)));
-			model.addAttribute("fileList",fileMapper.selectByProjectId(Integer.parseInt(project)));
+			NoticeUser noticeUser=  new NoticeUser();
+			noticeUser.setProjectId(Integer.parseInt(projectId));
+			noticeUser.setMember(userService.getCurrentUser().getId());
+			model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+			model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+			model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
+			model.addAttribute("userList",userMapper.selectProject(Integer.parseInt(projectId)));
+			model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
 	        return "layout/project/info";
 		}
 		
@@ -319,6 +331,20 @@ public class FileController {
 	@RequestMapping(value = "/{fileId}/download.do",method = RequestMethod.GET)
 	public void download(@PathVariable String fileId,Model model,HttpServletResponse response) throws IOException {
 		   File file = fileMapper.selectById(Integer.parseInt(fileId));
+	       if (file == null) return;
+	        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
+	        response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ";");
+	        try (BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
+	            output.write(file.getData());
+	        }
+
+		
+        
+    }
+	@RequestMapping(value = "/{fileId}/downloadInner.do",method = RequestMethod.GET)
+	public void downloadInner(@PathVariable String fileId,Model model,HttpServletResponse response) throws IOException {
+		   FileInner file = fileInnerMapper.selectById(Integer.parseInt(fileId));
 	       if (file == null) return;
 	        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
 	        response.setContentType("application/octet-stream");
@@ -379,17 +405,25 @@ public class FileController {
 			  fileInnerMapper.delete(file.getId());
 			  fileMapper.delete(Integer.parseInt(fileId));
 			  fileService.deleteFolder("C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/FileSave/"+file.getFileName());
-			  model.addAttribute("userList",userMapper.selectAll());
-			  model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
-			  model.addAttribute("project",project);
-			  model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
+			  	NoticeUser noticeUser=  new NoticeUser();
+				noticeUser.setProjectId(Integer.parseInt(projectId));
+				noticeUser.setMember(userService.getCurrentUser().getId());
+				model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+				model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("userList",userMapper.selectProject(Integer.parseInt(projectId)));
+				model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
 			  return "layout/project/info";
 		  }
 		  else{
-			  model.addAttribute("userList",userMapper.selectAll());
-			  model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
-			  model.addAttribute("project",project);
-			  model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
+			  	NoticeUser noticeUser=  new NoticeUser();
+				noticeUser.setProjectId(Integer.parseInt(projectId));
+				noticeUser.setMember(userService.getCurrentUser().getId());
+				model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+				model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
+				model.addAttribute("userList",userMapper.selectProject(Integer.parseInt(projectId)));
+				model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
 			  return "layout/project/info";
 		  }
 		
@@ -418,6 +452,13 @@ public class FileController {
 		        return "layout/file/detail";
 		  }
 		
+        
+    }
+	@RequestMapping(value = "/{fileId}/history.do",method = RequestMethod.GET)
+	public String history(@PathVariable String fileId,Model model) throws IOException {
+		  
+		model.addAttribute("fileList",fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId)));
+		return "webview/FileList";
         
     }
 	/*모바일 url*/

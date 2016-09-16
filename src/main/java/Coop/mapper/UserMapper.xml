@@ -13,6 +13,13 @@
     	SELECT * FROM User
     	WHERE ID = #{id}
     </select>
+    <select id="selectProject" resultType = "Coop.model.User" parameterType="int">
+    	select *
+		from user 
+		where not id in (select distinct userId
+		from pro_user
+		where projectId = #{id});
+    </select>
     
     
     

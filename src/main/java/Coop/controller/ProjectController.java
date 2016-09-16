@@ -72,9 +72,13 @@ public class ProjectController {
 	@RequestMapping(value = "/edit.do",method = RequestMethod.POST)
 	 public String edit(Project project,Model model) {
 		projectMapper.update(project);
+		NoticeUser noticeUser=  new NoticeUser();
+		noticeUser.setProjectId(project.getId());
+		noticeUser.setMember(userService.getCurrentUser().getId());
+		model.addAttribute("noticeList",noticeMapper.select(noticeUser));
 		model.addAttribute("project",projectMapper.selectByProjectId(project.getId()));
 		model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
-		model.addAttribute("userList",userMapper.selectAll());
+		model.addAttribute("userList",userMapper.selectProject(project.getId()));
 		model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
 		return "layout/project/info";
 		
@@ -90,11 +94,13 @@ public class ProjectController {
 			proUserMapper.updateCont(pro);
 			noticeUser.setProjectId(project.getId());
 			noticeUser.setMember(userService.getCurrentUser().getId());
+			List<User> userList = userMapper.selectProject(project.getId());
+			List<User> pro_user = proUserMapper.selectByProjectId(project.getId());
 			model.addAttribute("noticeList",noticeMapper.select(noticeUser));
 			model.addAttribute("project",project);
 			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
-			model.addAttribute("userList",userMapper.selectAll());
-			model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
+			model.addAttribute("userList",userList);
+			model.addAttribute("pro_user",pro_user);
 			
 			
 			return "layout/project/info";

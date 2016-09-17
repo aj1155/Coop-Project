@@ -496,8 +496,78 @@ public class FileController {
 		model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
         return "webview/pngview";
     }
+	@RequestMapping(value = "/history.do",method = RequestMethod.GET)
+	public String historyMobile(@RequestParam String fileId,Model model) throws IOException {
+		  
+		model.addAttribute("fileList",fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId)));
+		return "webview/FileList";
+        
+    }
+	@RequestMapping(value = "/downloadInner.do",method = RequestMethod.GET)
+	public void downloadInnerMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
+		   FileInner file = fileInnerMapper.selectById(Integer.parseInt(fileId));
+	       if (file == null) return;
+	        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
+	        response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ";");
+	        try (BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
+	            output.write(file.getData());
+	        }
+
+		
+        
+    }
 	
-	
+	@ResponseBody
+	@RequestMapping(value = "/upload.do",method = RequestMethod.POST)
+	public String upload(@RequestParam String projectId,@RequestParam("des") String des,
+			@RequestParam("fileData") byte[] data ,@RequestParam("fileName") String fileName,
+			Model model) throws IOException {
+		String user = userService.getCurrentUser().getId();
+		String project = projectId;
+		Notice notice = new Notice();
+		Pro_User pro = new Pro_User();
+		pro.setCont(3);
+		pro.setProId(Integer.parseInt(projectId));
+		pro.setUserId(user);
+		proUserMapper.updateCont(pro);
+		File file = new File();
+		if(data!=null){
+			 
+			 
+			 file.setUserId(user);
+			 file.setProjectId(Integer.parseInt(project));
+			 file.setFileName(fileName);
+			 file.setData(data);
+			 file.setDes(des);
+			 fileMapper.insert(file);
+			 
+			 
+		}
+		notice.setProjectId(Integer.parseInt(projectId));
+		notice.setUserId(userService.getCurrentUser().getId());
+		String noDes = userService.getCurrentUser().getName()+"님이 "+"새로운 파일을 업로드 했습니다";
+		notice.setDes(noDes);
+		notice.setFileId(file.getId());
+		noticeMapper.insert(notice);
+		
+		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+		
+		for(int i=0;i<proUser.size();i++){
+			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+				NoticeUser noticeUser = new NoticeUser();
+				noticeUser.setId(notice.getId());
+				noticeUser.setProjectId(Integer.parseInt(projectId));
+				noticeUser.setMember(proUser.get(i).getId());
+				
+				noticeUserMapper.insert(noticeUser);
+			}
+			
+					
+		}
+		
+		return "success";
+    }
 	
 
 }

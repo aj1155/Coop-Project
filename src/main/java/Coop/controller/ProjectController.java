@@ -28,6 +28,7 @@ import Coop.model.ChartData;
 import Coop.model.IComment;
 import Coop.model.Invite;
 import Coop.model.Issue;
+import Coop.model.Notice;
 import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
@@ -220,6 +221,18 @@ public class ProjectController {
 		else{
 			return null;
 		}
+		
+			
+	}
+	@ResponseBody
+	@RequestMapping(value = "/request.do",method = RequestMethod.GET)
+	 public List<Notice> request(@RequestParam String id,HttpServletResponse response) {
+		
+		NoticeUser noticeUser=  new NoticeUser();
+		noticeUser.setProjectId(Integer.parseInt(id));
+		noticeUser.setMember(userService.getCurrentUser().getId());
+		
+		return noticeMapper.select(noticeUser);
 		
 			
 	}

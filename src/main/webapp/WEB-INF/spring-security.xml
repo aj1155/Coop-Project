@@ -8,6 +8,7 @@
 
     <http auto-config="true">
         <intercept-url pattern="/user/*" access="ROLE_전체" />
+		
         <form-login
             login-page="/home/index.do"
             login-processing-url="/home/login_processing.do"

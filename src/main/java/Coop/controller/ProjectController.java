@@ -16,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import Coop.mapper.FileMapper;
+import Coop.mapper.ICommentMapper;
 import Coop.mapper.InviteMapper;
+import Coop.mapper.IssueMapper;
 import Coop.mapper.NoticeMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Active;
 import Coop.model.ChartData;
+import Coop.model.IComment;
 import Coop.model.Invite;
+import Coop.model.Issue;
 import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
@@ -41,7 +45,9 @@ public class ProjectController {
 	@Autowired UserMapper userMapper;
 	@Autowired InviteMapper inviteMapper;
 	@Autowired NoticeMapper noticeMapper;
-
+	@Autowired IssueMapper issueMapper;
+	@Autowired ICommentMapper iCommentMapper;
+	
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static String getCurrentDate() {
@@ -80,6 +86,7 @@ public class ProjectController {
 		model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 		model.addAttribute("userList",userMapper.selectProject(project.getId()));
 		model.addAttribute("pro_user",proUserMapper.selectByProjectId(project.getId()));
+		model.addAttribute("issueList", issueMapper.selectByProjectId(project.getId()));
 		return "layout/project/info";
 		
 	}
@@ -101,7 +108,7 @@ public class ProjectController {
 			model.addAttribute("fileList", fileMapper.selectByProjectId(project.getId()));
 			model.addAttribute("userList",userList);
 			model.addAttribute("pro_user",pro_user);
-			
+			model.addAttribute("issueList", issueMapper.selectByProjectId(project.getId()));
 			
 			return "layout/project/info";
 	}
@@ -124,6 +131,56 @@ public class ProjectController {
 		inviteMapper.insert(invite);
 		model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
 		return "redirect:" + "/project/"+projectId+"/proInfo.do";
+	}
+	@RequestMapping(value="/{projectId}/{issueId}/issueInfo.do",method = RequestMethod.GET)
+	public String issueInfo(@PathVariable String projectId,@PathVariable String issueId,Model model){
+		
+		model.addAttribute("issue",issueMapper.selectById(Integer.parseInt(issueId)));
+		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("commentList",iCommentMapper.selectByIssueId(Integer.parseInt(issueId)));
+		return "layout/issue/info";
+	}
+	@RequestMapping(value="/{projectId}/{issueId}/issueInfo.do",method = RequestMethod.POST)
+	public String issueInfo(@PathVariable String projectId,@PathVariable String issueId,
+			IComment icomment,Model model){
+		
+		icomment.setIssueId(Integer.parseInt(issueId));
+		icomment.setProjectId(Integer.parseInt(projectId));
+		icomment.setUserId(userService.getCurrentUser().getId());
+		icomment.setUserName(userService.getCurrentUser().getName());
+		
+		iCommentMapper.insert(icomment);
+		
+		model.addAttribute("issue",issueMapper.selectById(Integer.parseInt(issueId)));
+		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("commentList",iCommentMapper.selectByIssueId(Integer.parseInt(issueId)));
+		
+		return "layout/issue/info";
+	}
+	@RequestMapping(value="/{projectId}/issue.do",method = RequestMethod.GET)
+	public String issue(@PathVariable String projectId,Model model){
+		
+		return "layout/project/issue";
+	}
+	@RequestMapping(value="/{projectId}/issue.do",method = RequestMethod.POST)
+	public String issueMake(@PathVariable String projectId,Issue issue,Model model){
+		issue.setProjectId(Integer.parseInt(projectId));
+		issue.setUserId(userService.getCurrentUser().getId());
+		issue.setUserName(userService.getCurrentUser().getName());
+		
+		issueMapper.insert(issue);
+		
+		NoticeUser noticeUser=  new NoticeUser();
+		noticeUser.setProjectId(Integer.parseInt(projectId));
+		noticeUser.setMember(userService.getCurrentUser().getId());
+		model.addAttribute("noticeList",noticeMapper.select(noticeUser));
+		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("userList",userMapper.selectProject(Integer.parseInt(projectId)));
+		model.addAttribute("pro_user",proUserMapper.selectByProjectId(Integer.parseInt(projectId)));
+		model.addAttribute("issueList", issueMapper.selectByProjectId(Integer.parseInt(projectId)));
+		
+		return "layout/project/info";
 	}
 	
 	@ResponseBody

@@ -1,0 +1,15 @@
+.work-progres {
+    box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.15);
+    padding: 1.34em 1em;
+    background: #fff;
+}
+.chit-chat-heading {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #5F5D5D;
+    text-transform: uppercase;
+   font-family: 'Carrois Gothic', sans-serif;
+}
+.table:hover{
+	cursor:pointer;
+}

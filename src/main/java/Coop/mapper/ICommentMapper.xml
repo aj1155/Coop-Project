@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+             
+<mapper namespace="Coop.mapper.ICommentMapper">
+	
+	<!-- User 테이블에서 유저정보를 가져옴 기본 select문 -->
+    <select id="selectAll" resultType = "Coop.model.IComment">
+    	SELECT * FROM ICOMMENT
+    </select>
+    
+    <select id="selectById" resultType = "Coop.model.IComment">
+    	SELECT * FROM ICOMMENT
+    	WHERE ID = #{id}
+    </select>
+    <select id="selectByIssueId" resultType = "Coop.model.IComment">
+    	select c.*,u.name 'userName'
+		from Icomment c join user u 
+		where c.issueId = #{issueId}
+		and c.userId = u.id;
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO ICOMMENT(projectId,issueId,userId,write_Time,content)
+    	values(#{projectId},#{issueId},#{userId},NOW(),#{content})
+    </insert>
+   	
+   	<delete id ="delete" parameterType = "int">
+   		delete
+   		from Icomment
+   		where id = #{id}
+   	</delete> 
+   
+
+</mapper>
+             

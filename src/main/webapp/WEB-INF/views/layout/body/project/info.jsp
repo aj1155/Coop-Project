@@ -3,11 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+<link href='/Coop/res/css/issue.css' rel='stylesheet' type='text/css'>
 <script>
 $(function(){
 	$('#new_file').click(function(){
 		location.href = "/Coop/file/"+${project.id}+"/"+$('#user_id').val()+"/create.do"
 	});
+	$("tr[data-url]").click(function() {
+        location.href = $(this).attr("data-url");
+ 	});
 	$("li[data-url]").click(function() {
         location.href = $(this).attr("data-url");
  	});
@@ -63,6 +67,23 @@ $(function(){
 				chart.render();
 		
 	};
+	$('.star').on('click', function () {
+	      $(this).toggleClass('star-checked');
+	    });
+
+	    $('.ckbox label').on('click', function () {
+	      $(this).parents('tr').toggleClass('selected');
+	    });
+
+	    $('.btn-filter').on('click', function () {
+	      var $target = $(this).data('target');
+	      if ($target != 'all') {
+	        $('.table tr').css('display', 'none');
+	        $('.table tr[data-status="' + $target + '"]').fadeIn('slow');
+	      } else {
+	        $('.table tr').css('display', 'none').fadeIn('slow');
+	      }
+	    });
 });
 
 </script>
@@ -102,6 +123,7 @@ label {
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#work"><i class="fa fa-file-word-o" aria-hidden="true"></i> Work</a></li>
   <li><a data-toggle="tab" href="#problem"><i class="fa fa-users" aria-hidden="true"></i> Member</a></li>
+  <li><a data-toggle="tab" href="#issue"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> issue</a></li>
   <li><a data-toggle="tab" href="#request"><i class="fa fa-refresh" aria-hidden="true"></i> Request <span style="color:red;">${noticeList.size()}</span></a></li>
   <c:if test="${project.owner==userId}">
   <li><a data-toggle="tab" href="#setting"><i class="fa fa-wrench" aria-hidden="true"></i> Settings</a></li>
@@ -157,7 +179,81 @@ label {
     </c:forEach>
   </ul>
   </div>
-   
+  <div id="issue" class="tab-pane fade">
+   <div class="filter-bar">
+    <form accept-charset="UTF-8" action="/Coop/project/search.do" class="d-inline" method="post" role="search">
+    <!--<input type="hidden" name="user" value="<sec:authentication property="user.name" />">-->
+    <input type="text" id="your-repos-filter" name="search" style="width:200px;height:30px;" class="form-control js-filterable-field" placeholder="Find a issue&hellip;" aria-label="Filter your repositories by name" >
+    <input type="submit" style="margin-bottom:10px;" value="Search" class="btn">
+	<input type="button" id="new_pro" style="margin-bottom:10px;" value="new" class="btn pull-right btn-success" data-url="/Coop/project/${project.id}/issue.do">
+	</form>
+	
+    </div>
+    
+    <div class="chit-chat-layer1">
+    <div class="col-md-10">
+               <div class="work-progres">
+                            <div class="chit-chat-heading">
+                                  List of Issues
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>Issue Name</th>
+                                      <th>User</th>                                   
+                                                                        
+                                      <th>Label</th>
+                                      <th>Rating stars</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                              <c:forEach var="issue" items="${issueList}">
+                                <tr data-url="/Coop/project/${project.id}/${issue.id}/issueInfo.do">
+                                  <td><span><img id="issue_img" src="/Coop/res/images/issue.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span></td>
+                                  <td style="font:bold;">${issue.name }</td>
+                                  <td>${issue.userName }</td>                                 
+                                   
+                                  <c:choose>
+
+									    <c:when test="${issue.label eq '오류'}">
+									        <td><span class="label btn-danger">${issue.label}</span></td>
+									    </c:when>
+									
+									    <c:when test="${issue.label eq '도움요청'}">
+									        <td><span class="label btn-warning">${issue.label}</span></td>
+									    </c:when>
+									    <c:when test="${issue.label eq '정보공유'}">
+									        <td><span class="label btn-success">${issue.label}</span></td>
+									    </c:when>
+									    <c:when test="${issue.label eq '진행사항'}">
+									        <td><span class="label btn-priamry">${issue.label}</span></td>
+									    </c:when>
+									    <c:when test="${issue.label eq '질문사항'}">
+									        <td><span class="label btn-info">${issue.label}</span></td>
+									    </c:when>
+									
+									    
+
+								 </c:choose>              
+                                  
+                                  <td><span class="glyphicon glyphicon-star"><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span></td>
+                              </tr>
+                          	</c:forEach>
+                          </tbody>
+                      </table>
+                  </div>
+             </div>
+      </div>
+    
+     <div class="clearfix"> </div>
+</div>
+
+	
+</div>
+  
+
    <div id="request" class="tab-pane fade">
     <h3>Request activity</h3>
     <c:if test="${noticeList.size()>0}">
@@ -227,8 +323,8 @@ label {
                                     <p class="text-muted"><strong>*</strong> These fields are required. Contact form template by <a href="http://bootstrapious.com" target="_blank">Coop</a>.</p>
                                 </div>
                             </div>
-                        </div>
-
+                     
+					</div>
                     </form>
 
                 </div><!-- /.8 -->

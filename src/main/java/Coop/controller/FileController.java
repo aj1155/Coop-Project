@@ -40,6 +40,7 @@ import Coop.model.Project;
 import Coop.model.User;
 import Coop.service.FileService;
 import Coop.service.ImageCompareService;
+import Coop.service.MobileAuthenticationService;
 import Coop.service.PDFChange;
 import Coop.service.PPTChange;
 import Coop.service.UserService;
@@ -62,7 +63,7 @@ public class FileController {
 	@Autowired PPTChange pptChange;
 	@Autowired NoticeMapper noticeMapper;
 	@Autowired NoticeUserMapper noticeUserMapper;
-	
+	@Autowired MobileAuthenticationService mobileAuthenticationService;
 	
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.GET)
@@ -464,55 +465,119 @@ public class FileController {
 	/*모바일 url*/
 	@ResponseBody
 	@RequestMapping(value = "/commentList.do",method = RequestMethod.GET)
-	public List<Comment> comment(@RequestParam String fileId,Model model) {
-		return commentMapper.selectByFileId(Integer.parseInt(fileId));
+	public List<Comment> comment(@RequestParam String fileId,Model model,HttpServletResponse response) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			return commentMapper.selectByFileId(Integer.parseInt(fileId));
+		}
+		else{
+			return null;
+		}
+		
     }
 	@ResponseBody
 	@RequestMapping(value = "/fileList.do",method = RequestMethod.GET)
 	 public List<File> ListFile(@RequestParam String id,HttpServletResponse response) {
 		
 		response.addHeader("Access-Control-Allow-Origin", "*");
-		return fileMapper.selectByProjectId(Integer.parseInt(id));	
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			return fileMapper.selectByProjectId(Integer.parseInt(id));	
+		}
+		else{
+			return null;
+		}
+		
 			
 	}
 	@ResponseBody
 	@RequestMapping(value = "/commentWrite.do",method = RequestMethod.POST)
-	public String commentList(@RequestParam String proId,@RequestParam String fileId,@RequestParam String text,Model model)  {
-		Comment comment = new Comment();
-		comment.setProjectId(Integer.parseInt(proId));
-		comment.setFileId(Integer.parseInt(fileId));
-		comment.setUserId(userService.getCurrentUser().getId());
-		comment.setContent(text);
+	public String commentList(@RequestParam String proId,@RequestParam String fileId,@RequestParam String text,Model model,
+			HttpServletResponse response)  {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			Comment comment = new Comment();
+			comment.setProjectId(Integer.parseInt(proId));
+			comment.setFileId(Integer.parseInt(fileId));
+			comment.setUserId(userService.getCurrentUser().getId());
+			comment.setContent(text);
+			
+			commentMapper.insert(comment);
+	        return "success";	
+		}
+		else{
+			return null;
+		}
 		
-		commentMapper.insert(comment);
-        return "success";
+		
 		
         
     }
 	@RequestMapping(value = "/show.do",method = RequestMethod.GET)
-	public String pngReturn(@RequestParam String fileId,Model model) {
+	public String pngReturn(@RequestParam String fileId,Model model,HttpServletResponse response) {
 		
-		model.addAttribute("file", fileMapper.selectById(Integer.parseInt(fileId)));
-		model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
-        return "webview/pngview";
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			model.addAttribute("file", fileMapper.selectById(Integer.parseInt(fileId)));
+			model.addAttribute("pngs",pngFilesMapper.selectByFileId(Integer.parseInt(fileId)));
+	        return "webview/pngview";
+		}
+		else{
+			return null;
+		}
+		
     }
 	@RequestMapping(value = "/history.do",method = RequestMethod.GET)
-	public String historyMobile(@RequestParam String fileId,Model model) throws IOException {
-		  
-		model.addAttribute("fileList",fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId)));
-		return "webview/FileList";
+	public String historyMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			model.addAttribute("fileList",fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId)));
+			return "webview/FileList";
+		}
+		else{
+			return null;
+		}
+		
         
     }
 	@RequestMapping(value = "/downloadInner.do",method = RequestMethod.GET)
 	public void downloadInnerMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
-		   FileInner file = fileInnerMapper.selectById(Integer.parseInt(fileId));
-	       if (file == null) return;
-	        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
-	        response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ";");
-	        try (BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
-	            output.write(file.getData());
-	        }
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			 FileInner file = fileInnerMapper.selectById(Integer.parseInt(fileId));
+		       if (file == null) return;
+		        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
+		        response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ";");
+		        try (BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
+		            output.write(file.getData());
+		        }
+		}
+		else{
+			
+		}
+		  
+
+		
+        
+    }
+	
+	@RequestMapping(value = "/downloadMobile.do",method = RequestMethod.GET)
+	public void downloadMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			 File file = fileMapper.selectById(Integer.parseInt(fileId));
+		       if (file == null) return;
+		        String fileName = URLEncoder.encode(file.getFileName(),"UTF-8");
+		        response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ";");
+		        try (BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
+		            output.write(file.getData());
+		        }
+		}
+		else{
+			
+		}
+		  
 
 		
         
@@ -522,51 +587,59 @@ public class FileController {
 	@RequestMapping(value = "/upload.do",method = RequestMethod.POST)
 	public String upload(@RequestParam String projectId,@RequestParam("des") String des,
 			@RequestParam("fileData") byte[] data ,@RequestParam("fileName") String fileName,
-			Model model) throws IOException {
-		String user = userService.getCurrentUser().getId();
-		String project = projectId;
-		Notice notice = new Notice();
-		Pro_User pro = new Pro_User();
-		pro.setCont(3);
-		pro.setProId(Integer.parseInt(projectId));
-		pro.setUserId(user);
-		proUserMapper.updateCont(pro);
-		File file = new File();
-		if(data!=null){
-			 
-			 
-			 file.setUserId(user);
-			 file.setProjectId(Integer.parseInt(project));
-			 file.setFileName(fileName);
-			 file.setData(data);
-			 file.setDes(des);
-			 fileMapper.insert(file);
-			 
-			 
-		}
-		notice.setProjectId(Integer.parseInt(projectId));
-		notice.setUserId(userService.getCurrentUser().getId());
-		String noDes = userService.getCurrentUser().getName()+"님이 "+"새로운 파일을 업로드 했습니다";
-		notice.setDes(noDes);
-		notice.setFileId(file.getId());
-		noticeMapper.insert(notice);
+			Model model,HttpServletResponse response) throws IOException {
 		
-		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
-		
-		for(int i=0;i<proUser.size();i++){
-			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
-				NoticeUser noticeUser = new NoticeUser();
-				noticeUser.setId(notice.getId());
-				noticeUser.setProjectId(Integer.parseInt(projectId));
-				noticeUser.setMember(proUser.get(i).getId());
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			String user = userService.getCurrentUser().getId();
+			String project = projectId;
+			Notice notice = new Notice();
+			Pro_User pro = new Pro_User();
+			pro.setCont(3);
+			pro.setProId(Integer.parseInt(projectId));
+			pro.setUserId(user);
+			proUserMapper.updateCont(pro);
+			File file = new File();
+			if(data!=null){
+				 
+				 
+				 file.setUserId(user);
+				 file.setProjectId(Integer.parseInt(project));
+				 file.setFileName(fileName);
+				 file.setData(data);
+				 file.setDes(des);
+				 fileMapper.insert(file);
+				 
+				 
+			}
+			notice.setProjectId(Integer.parseInt(projectId));
+			notice.setUserId(userService.getCurrentUser().getId());
+			String noDes = userService.getCurrentUser().getName()+"님이 "+"새로운 파일을 업로드 했습니다";
+			notice.setDes(noDes);
+			notice.setFileId(file.getId());
+			noticeMapper.insert(notice);
+			
+			List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+			
+			for(int i=0;i<proUser.size();i++){
+				if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+					NoticeUser noticeUser = new NoticeUser();
+					noticeUser.setId(notice.getId());
+					noticeUser.setProjectId(Integer.parseInt(projectId));
+					noticeUser.setMember(proUser.get(i).getId());
+					
+					noticeUserMapper.insert(noticeUser);
+				}
 				
-				noticeUserMapper.insert(noticeUser);
+						
 			}
 			
-					
+			return "success";
+		}
+		else{
+			return null;
 		}
 		
-		return "success";
     }
 	
 

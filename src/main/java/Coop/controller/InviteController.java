@@ -1,6 +1,8 @@
 package Coop.controller;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +16,10 @@ import Coop.mapper.InviteMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
+import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
+import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
 
 @Controller
@@ -27,6 +31,7 @@ public class InviteController {
 	@Autowired ProUserMapper proUserMapper;
 	@Autowired UserService userService;
 	@Autowired InviteMapper inviteMapper;
+	@Autowired MobileAuthenticationService mobileAuthenticationService;
 	
 	@RequestMapping(value="/{projectId}/info.do",method = RequestMethod.GET)
 	public String info(@PathVariable String projectId,Model model){
@@ -57,20 +62,27 @@ public class InviteController {
 	/*Mobile url*/
 	@ResponseBody
 	@RequestMapping(value="/mobileResult.do",method = RequestMethod.GET)
-	public String mobileResult(@RequestParam("result") String result,@RequestParam("projectId") String projectId,Model model){
-		System.out.println(result);
-		if(result.equals("ACCEPT")){
-			String userId = userService.getCurrentUser().getId();
-			Pro_User proUser = new Pro_User();
-			proUser.setProId(Integer.parseInt(projectId));
-			proUser.setUserId(userId);
-			
-			HashMap<String,Object> map = new HashMap<String,Object>();
-			map.put("param",proUser);
-			inviteMapper.updateConfirm(map);
-			proUserMapper.insertPro_user(proUser);
+	public String mobileResult(@RequestParam("result") String result,@RequestParam("projectId") String projectId,Model model,
+			HttpServletResponse response){
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			if(result.equals("ACCEPT")){
+				String userId = userService.getCurrentUser().getId();
+				Pro_User proUser = new Pro_User();
+				proUser.setProId(Integer.parseInt(projectId));
+				proUser.setUserId(userId);
+				
+				HashMap<String,Object> map = new HashMap<String,Object>();
+				map.put("param",proUser);
+				inviteMapper.updateConfirm(map);
+				proUserMapper.insertPro_user(proUser);
+			}
+			return "success";
 		}
-		return "success";
+		else{
+			return null;
+		}
+		
 	}
 
 }

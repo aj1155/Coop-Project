@@ -33,6 +33,7 @@ import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.model.User;
+import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
 
 @Controller
@@ -48,6 +49,7 @@ public class ProjectController {
 	@Autowired NoticeMapper noticeMapper;
 	@Autowired IssueMapper issueMapper;
 	@Autowired ICommentMapper iCommentMapper;
+	@Autowired MobileAuthenticationService mobileAuthenticationService;
 	
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -184,39 +186,73 @@ public class ProjectController {
 		return "layout/project/info";
 	}
 	
-	@ResponseBody
-	@RequestMapping(value="/chart.do", method=RequestMethod.GET)
-    public List<ChartData> chart(@RequestParam String id,HttpServletResponse response) {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		List<ChartData> list = proUserMapper.selectCont(Integer.parseInt(id));
-		return list;
-        
-    }
+	
 	
 
 	/*모바일 url*/
 	@ResponseBody
 	@RequestMapping(value = "/{id}/proList.do",method = RequestMethod.GET)
 	 public List<Project> ListDo(@PathVariable String id,HttpServletResponse response) {
-			System.out.println(id);
-	        response.addHeader("Access-Control-Allow-Origin", "*");
-			return projectMapper.selectById2(id);
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+				return projectMapper.selectById2(id);
+			}
+			else{
+				return null;
+			}
+			
+	        
 			
 	}
 	@ResponseBody
 	@RequestMapping(value = "/memberList.do",method = RequestMethod.GET)
-	 public List<User> member(@PathVariable String id,HttpServletResponse response) {
-			
-			return proUserMapper.selectByProjectId(Integer.parseInt(id));
+	 public List<User> member(@RequestParam String id,HttpServletResponse response) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+				return proUserMapper.selectByProjectId(Integer.parseInt(id));
+			}
+			else{
+				return null;
+			}
+		
 			
 	}
 	@ResponseBody
+	@RequestMapping(value="/chart.do", method=RequestMethod.GET)
+    public List<ChartData> chart(@RequestParam String id,HttpServletResponse response) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			return proUserMapper.selectCont(Integer.parseInt(id));
+		}
+		else{
+			return null;
+		}
+		
+        
+    }
+	@ResponseBody
 	@RequestMapping(value = "/proList.do",method = RequestMethod.POST)
 	 public List<Project> ListProject(@RequestParam String id,HttpServletResponse response) {
-		if(userService.getCurrentUser().getId().equals(id))
-		{
-			response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			return projectMapper.selectById2(id);
+		}
+		else{
+			return null;
+		}
+		
+		
+			
+	}
+	@ResponseBody
+	@RequestMapping(value = "/request.do",method = RequestMethod.GET)
+	 public List<Notice> request(@RequestParam String id,HttpServletResponse response) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			NoticeUser noticeUser=  new NoticeUser();
+			noticeUser.setProjectId(Integer.parseInt(id));
+			noticeUser.setMember(userService.getCurrentUser().getId());
+			return noticeMapper.select(noticeUser);
 		}
 		else{
 			return null;
@@ -224,34 +260,29 @@ public class ProjectController {
 		
 			
 	}
-	@ResponseBody
-	@RequestMapping(value = "/request.do",method = RequestMethod.GET)
-	 public List<Notice> request(@RequestParam String id,HttpServletResponse response) {
-		
-		NoticeUser noticeUser=  new NoticeUser();
-		noticeUser.setProjectId(Integer.parseInt(id));
-		noticeUser.setMember(userService.getCurrentUser().getId());
-		
-		return noticeMapper.select(noticeUser);
-		
-			
-	}
 	 @RequestMapping(value = "/mobileEdit.do",method = RequestMethod.POST)
 	 public String editMobile(@RequestParam String id,@RequestParam String owner,@RequestParam String des ,
 			 Model model,@RequestParam String name) {
-		Project project = new Project();
-		project.setId(Integer.parseInt(id));
-		project.setDes(des);
-		project.setName(name);
-		project.setOwner(owner);
-		if(project.getName()==null || project.getName().isEmpty()){
-			return "check Project Name";
-		}
-		if(project.getOwner()==null || project.getOwner().isEmpty()){
-			return "check Owner Name";
-		}
 		
-		return "success";
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+				Project project = new Project();
+				project.setId(Integer.parseInt(id));
+				project.setDes(des);
+				project.setName(name);
+				project.setOwner(owner);
+				if(project.getName()==null || project.getName().isEmpty()){
+					return "check Project Name";
+				}
+				if(project.getOwner()==null || project.getOwner().isEmpty()){
+					return "check Owner Name";
+				}
+				
+				return "success";
+			}
+			else{
+				return "No Access";
+			}
+		
 		
 	}
 }

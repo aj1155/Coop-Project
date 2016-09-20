@@ -18,7 +18,9 @@ import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.ChartData;
 import Coop.model.Invite;
+import Coop.model.NoticeUser;
 import Coop.model.User;
+import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
 
 @Controller
@@ -29,6 +31,7 @@ public class HomeController {
 		@Autowired ProjectMapper projectMapper;
 		@Autowired UserService userService;
 		@Autowired InviteMapper inviteMapper;
+		@Autowired MobileAuthenticationService mobileAuthenticationService;
 		
 		@RequestMapping(value="/index.do", method=RequestMethod.GET)
 	    public String index(Model model) {
@@ -86,10 +89,16 @@ public class HomeController {
 	    }
 	    @ResponseBody
 		@RequestMapping(value="/requestList.do", method=RequestMethod.GET)
-	    public List<Invite> requestList(@RequestParam String id) {
+	    public List<Invite> requestList(@RequestParam String id,HttpServletResponse response) {
 			
-			
-	    	return inviteMapper.selectByRecipient(id);
+	    	response.addHeader("Access-Control-Allow-Origin", "*");
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+				return inviteMapper.selectByRecipient(id);
+			}
+			else{
+				return null;
+			}
+	    	
 			
 	    }
 		

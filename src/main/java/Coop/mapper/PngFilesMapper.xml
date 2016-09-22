@@ -7,18 +7,18 @@
 	
 	<select id="selectById" resultType="Coop.model.PngFiles">
        SELECT *
-        FROM   PngFiles
+        FROM   pngfiles
         WHERE  id = #{id}
     </select>
     
     <select id="selectByFileId" resultType="Coop.model.PngFiles">
        SELECT *
-        FROM   PngFiles
+        FROM   pngfiles
         WHERE  fileId = #{fileId}
     </select>
    
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO PngFiles (fileId,src,create_time)
+        INSERT INTO pngfiles (fileId,src,create_time)
         VALUES (#{fileId},#{src},now())
     </insert>
     

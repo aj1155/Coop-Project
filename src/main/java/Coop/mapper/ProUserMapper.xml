@@ -22,7 +22,7 @@
     </insert>
     <select id="selectByProjectId" resultType = "Coop.model.User">
     	SELECT u.*
-    	from Pro_user p join User u on p.userId = u.id
+    	from pro_user p join user u on p.userId = u.id
     	WHERE projectId = #{id}
     </select>
     <select id="selectCont" resultType = "Coop.model.ChartData">

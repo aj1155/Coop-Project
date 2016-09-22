@@ -5,17 +5,17 @@
 <mapper namespace="Coop.mapper.NoticeUserMapper">
 	
 	<select id="selectByRecipient" resultType = "Coop.model.NoticeUser">
-    	SELECT *,count(*) 'rowCount' FROM INVITE
+    	SELECT *,count(*) 'rowCount' FROM notice_user
     	WHERE recipient = #{recipient} and confirm = 0;
     </select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO Notice_User(id,projectId,member,confirm)
+    	INSERT INTO notice_user(id,projectId,member,confirm)
     	values(#{id},#{projectId},#{member},#{confirm})
     </insert>
     
     <update id="updateConfirm" parameterType="hashmap">
-    	UPDATE Notice_User
+    	UPDATE notice_user
     	SET confirm = 1
     	where id = #{param.id} and member = #{param.member} 
     </update>

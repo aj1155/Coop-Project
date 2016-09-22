@@ -6,11 +6,11 @@
 	
 	<!-- User 테이블에서 유저정보를 가져옴 기본 select문 -->
     <select id="selectAll" resultType = "Coop.model.Comment">
-    	SELECT * FROM COMMENT
+    	SELECT * FROM comment
     </select>
     
     <select id="selectById" resultType = "Coop.model.Comment">
-    	SELECT * FROM COMMENT
+    	SELECT * FROM comment
     	WHERE ID = #{id}
     </select>
     <select id="selectByFileId" resultType = "Coop.model.Comment">
@@ -20,7 +20,7 @@
 		and c.userId = u.id;
     </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO COMMENT(projectId,fileId,userId,writeTime,content)
+    	INSERT INTO comment(projectId,fileId,userId,writeTime,content)
     	values(#{projectId},#{fileId},#{userId},NOW(),#{content})
     </insert>
    	

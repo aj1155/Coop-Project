@@ -6,7 +6,7 @@
 	
 	
 	<select id="selectById" resultType = "Coop.model.Project">
-    	SELECT * FROM Project
+    	SELECT * FROM project
     	WHERE id in(SELECT projectId
     	from pro_user
     	where userId = #{id})
@@ -14,19 +14,19 @@
     
     
     <select id="selectById2" resultType = "Coop.model.Project">
-    	SELECT * FROM Project
+    	SELECT * FROM project
     	WHERE id in(SELECT projectId
     	from pro_user
     	where userId = #{id})
     </select>
     
     <select id="selectByProjectId" resultType = "Coop.model.Project">
-    	SELECT * FROM Project
+    	SELECT * FROM project
     	WHERE id = #{id}
     </select>
     <select id="selectBySearch" parameterType ="String" resultType = "Coop.model.Project">
     <![CDATA[
-    	SELECT * FROM Project
+    	SELECT * FROM project
     	WHERE name  like CONCAT('%', #{search} , '%')
     ]]>
     </select>
@@ -40,7 +40,7 @@
 		and p.id = pro.projectId) and pro.userId = #{userId};
     </select>
     <insert id="insertProject" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO Project(name,owner,des,create_time)
+    	INSERT INTO project(name,owner,des,create_time)
     	values(#{name},#{owner},#{des},#{create_time})
     </insert>
     
@@ -50,7 +50,7 @@
     </insert>
     
     <update id="update">
-        UPDATE Project 
+        UPDATE project 
         SET name = #{name},owner = #{owner},des = #{des}
         WHERE id = #{id}
     </update>

@@ -1,4 +1,5 @@
 package Coop.controller;
+import java.util.List;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ import Coop.mapper.InviteMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
-import Coop.model.NoticeUser;
+import Coop.model.Invite;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.service.MobileAuthenticationService;
@@ -61,7 +62,7 @@ public class InviteController {
 	
 	/*Mobile url*/
 	@ResponseBody
-	@RequestMapping(value="/mobileResult.do",method = RequestMethod.GET)
+	@RequestMapping(value="/mobileAcceptInvite.do",method = RequestMethod.GET)
 	public String mobileResult(@RequestParam("result") String result,@RequestParam("projectId") String projectId,Model model,
 			HttpServletResponse response){
 		response.addHeader("Access-Control-Allow-Origin", "*");
@@ -77,7 +78,21 @@ public class InviteController {
 				inviteMapper.updateConfirm(map);
 				proUserMapper.insertPro_user(proUser);
 			}
-			return "success";
+			return "check";
+		}
+		else{
+			return null;
+		}
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/mobileInviteList.do",method = RequestMethod.GET)
+	public List<Invite> mobileList(
+			HttpServletResponse response){
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			
+			return inviteMapper.selectByRecipient(userService.getCurrentUser().getId());
 		}
 		else{
 			return null;

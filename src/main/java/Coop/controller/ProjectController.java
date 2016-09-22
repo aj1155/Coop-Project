@@ -205,6 +205,29 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
+	@RequestMapping(value="/issueMakeMobile.do",method = RequestMethod.POST)
+	public String issueMakeMobile(@RequestParam String projectId,
+			@RequestParam String label,@RequestParam String des,Model model,HttpServletResponse response){
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			Issue issue = new Issue();
+			issue.setProjectId(Integer.parseInt(projectId));
+			issue.setUserId(userService.getCurrentUser().getId());
+			issue.setUserName(userService.getCurrentUser().getName());
+			issue.setDes(des);
+			issue.setLabel(label);
+			issueMapper.insert(issue);
+			return "success";
+		}
+		else{
+			return "fail";
+		}
+		
+		
+		
+		
+	}
+	@ResponseBody
 	@RequestMapping(value = "/memberList.do",method = RequestMethod.GET)
 	 public List<User> member(@RequestParam String id,HttpServletResponse response) {
 			response.addHeader("Access-Control-Allow-Origin", "*");
@@ -236,6 +259,20 @@ public class ProjectController {
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			return projectMapper.selectById2(id);
+		}
+		else{
+			return null;
+		}
+		
+		
+			
+	}
+	@ResponseBody
+	@RequestMapping(value = "/issueList.do",method = RequestMethod.GET)
+	 public List<Issue> issueList(@RequestParam String id,HttpServletResponse response) {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			return issueMapper.selectByProjectId(Integer.parseInt(id));
 		}
 		else{
 			return null;

@@ -5,17 +5,17 @@
 <mapper namespace="Coop.mapper.InviteMapper">
 	
 	<select id="selectByRecipient" resultType = "Coop.model.Invite">
-    	SELECT *,count(*) 'rowCount' FROM INVITE
+    	SELECT *,count(*) 'rowCount' FROM invite
     	WHERE recipient = #{recipient} and confirm = 0;
     </select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO Invite(sender,recipient,projectId)
+    	INSERT INTO invite(sender,recipient,projectId)
     	values(#{sender},#{recipient},#{projectId})
     </insert>
     
     <update id="updateConfirm" parameterType="hashmap">
-    	UPDATE INVITE
+    	UPDATE invite
     	SET confirm = 1
     	where projectId = #{param.proId} and recipient = #{param.userId} 
     </update>

@@ -6,11 +6,11 @@
 	
 	<!-- User 테이블에서 유저정보를 가져옴 기본 select문 -->
     <select id="selectAll" resultType = "Coop.model.User">
-    	SELECT * FROM User
+    	SELECT * FROM user
     </select>
     
     <select id="selectById" resultType = "Coop.model.User">
-    	SELECT * FROM User
+    	SELECT * FROM user
     	WHERE ID = #{id}
     </select>
     <select id="selectProject" resultType = "Coop.model.User" parameterType="int">
@@ -24,17 +24,17 @@
     
     
     <select id="loginProcess" parameterType = "String" resultType = "Coop.model.User">
-    	SELECT * FROM User
+    	SELECT * FROM user
     	WHERE ID = #{id} and Password = #{password}
     </select>
     
     <insert id="insertUser">
-    	INSERT INTO User(id,password,name,email)
+    	INSERT INTO user(id,password,name,email)
     	values(#{id},#{password},#{name},#{email})
     </insert>
     
    <update id="updateUserImage">
-        UPDATE User 
+        UPDATE user 
         SET img = #{img}
         WHERE id = #{id}
     </update>

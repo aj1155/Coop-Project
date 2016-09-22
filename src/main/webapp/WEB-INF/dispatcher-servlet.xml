@@ -50,9 +50,9 @@
     <bean id="myDataSource1"
         class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://211.35.76.124:3306/coop" />
+        <property name="url" value="jdbc:mysql://localhost:3306/coop" />
         <property name="username" value="root" />
-        <property name="password" value="wnsrntjqj1!" />
+        <property name="password" value="aksrltjqj1!" />
     </bean>
 
     <bean id="sqlSessionFactory1" class="org.mybatis.spring.SqlSessionFactoryBean">

@@ -7,36 +7,36 @@
 	
 	<select id="selectById" resultType="Coop.model.FileInner">
        SELECT *
-        FROM   FileInner
+        FROM   fileinner
         WHERE  id = #{id}
     </select>
     <select id="selectByProjectId" resultType="Coop.model.FileInner">
         SELECT id, projectId, userId, fileName, fileSize, fileTime
-        FROM   FileInner
+        FROM   fileinner
         WHERE  projectId = #{projectId}
     </select>
 
     <select id="selectByUserId" resultType="Coop.model.FileInner">
         SELECT *
-        FROM   FileInner
+        FROM   fileinner
         WHERE  userId = #{userId}
     </select>
     
     <select id="selectByRefFileId" resultType="Coop.model.FileInner">
        SELECT *
-        FROM   FileInner
+        FROM   fileinner
         WHERE  refFile = #{id}
         order by fileTime desc
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO FileInner (projectId, userId,refFile,fileName, fileSize, fileTime, data,des)
+        INSERT INTO fileinner (projectId, userId,refFile,fileName, fileSize, fileTime, data,des)
         VALUES (#{projectId}, #{userId},#{refFile} ,#{fileName}, #{fileSize}, NOW(), #{data},#{des})
     </insert>
     
     <delete id="delete" parameterType = "int" >
     	delete 
-    	from fileInner
+    	from fileinner
     	where refFile = #{id};
     </delete>
 

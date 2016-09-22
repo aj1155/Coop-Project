@@ -6,7 +6,7 @@
 	
 	<select id="selectByProjectId" resultType = "Coop.model.Notice">
     	SELECT *
-    	FROM NOTICE
+    	FROM notice
     	WHERE PROJECTID = #{ID}
     </select>
     
@@ -20,12 +20,12 @@
     </select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    	INSERT INTO Notice(userId,projectId,des,notice_time,fileId)
+    	INSERT INTO notice(userId,projectId,des,notice_time,fileId)
     	values(#{userId},#{projectId},#{des},now(),#{fileId})
     </insert>
     
     <update id="updateConfirm" parameterType="hashmap">
-    	UPDATE INVITE
+    	UPDATE notice
     	SET confirm = 1
     	where projectId = #{param.proId} and recipient = #{param.userId} 
     </update>

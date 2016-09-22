@@ -5,18 +5,18 @@
 	
     <select id="selectById" resultType="Coop.model.Issue">
     	SELECT *
-    	FROM Issue
+    	FROM issue
     	WHERE id = #{id}
     </select>
     
     <select id="selectByProjectId" resultType="Coop.model.Issue">
     	SELECT *
-    	FROM Issue
+    	FROM issue
     	WHERE projectId = #{id}
     </select>
     
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Issue (userId,userName,projectId,name,label,des,create_time)
+        INSERT INTO issue (userId,userName,projectId,name,label,des,create_time)
         VALUES (#{userId}, #{userName}, #{projectId},#{name},#{label},#{des},NOW())
     </insert>
     

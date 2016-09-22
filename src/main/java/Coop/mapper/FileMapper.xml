@@ -7,23 +7,23 @@
 	
 	<select id="selectById" resultType="Coop.model.File">
        SELECT *
-        FROM   File
+        FROM   file
         WHERE  id = #{id}
     </select>
     <select id="selectByProjectId" resultType="Coop.model.File">
         SELECT id, projectId, userId, fileName, fileSize, fileTime
-        FROM   File
+        FROM   file
         WHERE  projectId = #{projectId}
     </select>
 
     <select id="selectByUserId" resultType="Coop.model.File">
         SELECT *
-        FROM   File
+        FROM   file
         WHERE  userId = #{userId}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO File (projectId, userId, fileName, fileSize, fileTime, data,des)
+        INSERT INTO file (projectId, userId, fileName, fileSize, fileTime, data,des)
         VALUES (#{projectId}, #{userId}, #{fileName}, #{fileSize}, NOW(), #{data},#{des})
     </insert>
     

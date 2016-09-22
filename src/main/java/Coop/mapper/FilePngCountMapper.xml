@@ -8,12 +8,12 @@
 	
     <select id="selectByFileId" resultType="Coop.model.FilePngCount">
        SELECT *
-        FROM   FilePngCount
+        FROM   filepngcount
         WHERE  fileId = #{fileId}
     </select>
    
     <insert id="insert">
-        INSERT INTO FilePngCount (fileId,pngCount)
+        INSERT INTO filepngcount (fileId,pngCount)
         VALUES (#{fileId},#{pngCount})
     </insert>
 

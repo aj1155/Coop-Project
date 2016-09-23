@@ -8,7 +8,7 @@ public class File {
 	String userId;
 	String fileName;
 	int fileSize;
-	Date fileTime;
+	String fileTime;
 	byte[] data;
 	String des;
 
@@ -60,11 +60,11 @@ public class File {
 		this.fileSize = fileSize;
 	}
 
-	public Date getFileTime() {
+	public String getFileTime() {
 		return fileTime;
 	}
 
-	public void setFileTime(Date fileTime) {
+	public void setFileTime(String fileTime) {
 		this.fileTime = fileTime;
 	}
 

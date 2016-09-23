@@ -1,6 +1,7 @@
 package Coop.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -172,6 +173,7 @@ public class ProjectController {
 		issue.setUserName(userService.getCurrentUser().getName());
 		
 		issueMapper.insert(issue);
+		System.out.println(issue);
 		
 		NoticeUser noticeUser=  new NoticeUser();
 		noticeUser.setProjectId(Integer.parseInt(projectId));
@@ -207,7 +209,7 @@ public class ProjectController {
 	@ResponseBody
 	@RequestMapping(value="/issueMakeMobile.do",method = RequestMethod.POST)
 	public String issueMakeMobile(@RequestParam String projectId,
-			@RequestParam String label,@RequestParam String des,Model model,HttpServletResponse response){
+			@RequestParam String label,@RequestParam String name,@RequestParam String des,Model model,HttpServletResponse response){
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			Issue issue = new Issue();
@@ -216,6 +218,7 @@ public class ProjectController {
 			issue.setUserName(userService.getCurrentUser().getName());
 			issue.setDes(des);
 			issue.setLabel(label);
+			issue.setName(name);
 			issueMapper.insert(issue);
 			return "success";
 		}
@@ -280,6 +283,19 @@ public class ProjectController {
 		
 		
 			
+	}
+	@ResponseBody
+	@RequestMapping(value="/issueMobileInfo.do",method = RequestMethod.GET)
+	public Issue issueMobileInfo(@RequestParam String issueId,Model model){
+		
+		Issue issue = issueMapper.selectById(Integer.parseInt(issueId));
+		if(issue.getUserId().equals(userService.getCurrentUser())){
+			return issue;
+			
+		}
+		else{
+			return null;
+		}
 	}
 	@ResponseBody
 	@RequestMapping(value = "/request.do",method = RequestMethod.GET)

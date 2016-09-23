@@ -9,7 +9,7 @@ public class FileInner {
 	String userId;
 	String fileName;
 	int fileSize;
-	Date fileTime;
+	String fileTime;
 	byte[] data;
 	String des="";
 
@@ -61,11 +61,11 @@ public class FileInner {
 		this.fileSize = fileSize;
 	}
 
-	public Date getFileTime() {
+	public String getFileTime() {
 		return fileTime;
 	}
 
-	public void setFileTime(Date fileTime) {
+	public void setFileTime(String fileTime) {
 		this.fileTime = fileTime;
 	}
 

@@ -75,5 +75,11 @@ public class Issue {
 	public void setDes(String des) {
 		this.des = des;
 	}
+	
+	@Override
+	public String toString(){
+		
+		return "userName:"+userName+"name : "+name+"label: "+label+"des :"+des;
+	}
 
 }

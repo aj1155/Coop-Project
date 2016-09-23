@@ -116,7 +116,19 @@ ul.mylist li, ol.mylist li {
   <div id="Overview" class="tab-pane fade in active">
     
     <h3>Overview</h3>
-    <p>My Recently Actvity</p>
+    <c:if test="${noticeList.size()>0}">
+    <ul class="mylist">
+    <c:forEach var="notice" items="${noticeList}">
+     <span><img id="notice_img" src="/Coop/res/images/paper_plane.png" class="avatar img-circle" alt="avatar" style="height:30px; width:30px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><span><strong>${notice.name}</strong></span>&nbsp&nbsp 새로운 게시글
+   		  </li>
+    	  
+   		
+	      
+   		 
+   		 <hr/>        
+    </c:forEach>
+    </ul>
+    </c:if>
   </div>
   <div id="Project" class="tab-pane fade">
    <div class="filter-bar">

@@ -13,6 +13,7 @@ public interface ProjectMapper {
 	void insertProject(Project project);
 	void insertPro_user(Pro_User pro_user);
 	List<Project> selectById(User user);
+	List<Project> selectByNotice(String id);
 	List<Project> selectById2(String id);
 	List<Project> selectBySearch(String search);
 	Project selectByProjectId(int id);

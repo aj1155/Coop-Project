@@ -154,7 +154,7 @@ public class UserController {
 	 	@RequestMapping(value="/mobileUserInfo.do", method = RequestMethod.GET)
 		 public User info(@RequestParam String id,HttpServletResponse response) throws IOException {
 	 		response.addHeader("Access-Control-Allow-Origin", "*");
-			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser()) && userService.getCurrentUser().getId() == id){
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser()) && userService.getCurrentUser().getId().equals(id)){
 				return userMapper.selectById(id);
 			}
 			else{

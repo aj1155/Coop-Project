@@ -20,6 +20,14 @@
     	where userId = #{id})
     </select>
     
+    <select id ="selectByNotice" resultType = "Coop.model.Project">
+		select *
+		from project
+		where id in ( select projectId
+		from notice_user
+		where member = #{id} and confirm = 0);
+    </select>
+    
     <select id="selectByProjectId" resultType = "Coop.model.Project">
     	SELECT * FROM project
     	WHERE id = #{id}

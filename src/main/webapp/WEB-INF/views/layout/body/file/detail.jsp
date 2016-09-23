@@ -61,7 +61,7 @@ $(function(){
                         <div class="panel-body">
                             <p>Change File Contents...</p>
                             <c:forEach var="png" items="${ pngs }">
-                            	<img id="user_img" src="/Coop/res/FileSave/${file.fileName}/${png.src}" class="avatar img-circle" alt="avatar" style="height:500px; width:500px;"/>
+                            	<img id="user_img" src="/Coop/res/FileSave/${file.fileName}/${png.src}" class="avatar" alt="avatar" style="height:500px; width:500px;"/>
                         	</c:forEach>
                         </div>
                         <div class="panel-footer">

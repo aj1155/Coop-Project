@@ -2,15 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script>
-function readURL(input){
-	 if (input.files && input.files[0]) {
-	        var reader = new FileReader();
-	        reader.onload = function (e) {
-	            $('#user_img').attr('src', e.target.result);
-	        }
-	        reader.readAsDataURL(input.files[0]);
-	    }
-}
+
 </script>
 <style>
 .upload { 

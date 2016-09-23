@@ -279,11 +279,12 @@ public class FileController {
 					 pngCount = pptChange.convert("C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/FileSave/"+resFile.getFileName(), "C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/FileSave/"+resFile.getFileName()+"/"+file.getFileName(), file.getFileName());
 				 }else{
 					 pngCount = pdfChange.changePDF("C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/FileSave/"+resFile.getFileName()+"/"+file.getFileName());
+					 
 				 }
 				 //imageCompareService.compare(resFile.getFileName(), file.getFileName(), pngCount, path);
 				 //result = imageCompareService.compare("skh", file.getFileName(),1, path+"/");
 				 //result = imageCompareService.compare(fileInner.get(0).getFileName().substring(0,resFile.getFileName().indexOf('.')), file.getFileName(),2, path+"/");
-				 result = imageCompareService.compare2(fileInner.get(0).getFileName(),file.getFileName(),2, path+"/");
+				 result = imageCompareService.compare2(fileInner.get(0).getFileName(),file.getFileName(),pngCount, path+"/");
 			}
 			PngFiles[] png = new PngFiles[result.length];
 			System.out.println(png.length);

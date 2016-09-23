@@ -36,8 +36,8 @@ public class ImageCompareService {
 		System.out.println(before);
 		System.out.println(current);
 		
-		String result[] = new String[count+1];
-		for(int i=0;i<=count;i++){
+		String result[] = new String[count];
+		for(int i=0;i<count;i++){
 			
 			String file1 = path+before+i+".png";
 			String file2 = path+current+i+".png";

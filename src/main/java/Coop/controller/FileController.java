@@ -527,12 +527,14 @@ public class FileController {
 		}
 		
     }
+	@ResponseBody
 	@RequestMapping(value = "/history.do",method = RequestMethod.GET)
-	public String historyMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
+	public List<FileInner> historyMobile(@RequestParam String fileId,Model model,HttpServletResponse response) throws IOException {
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
-			model.addAttribute("fileList",fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId)));
-			return "webview/FileList";
+			
+			return fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId));
+			
 		}
 		else{
 			return null;

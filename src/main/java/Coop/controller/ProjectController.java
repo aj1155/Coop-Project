@@ -1,7 +1,6 @@
 package Coop.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import Coop.mapper.ActivePointMapper;
 import Coop.mapper.FileMapper;
 import Coop.mapper.ICommentMapper;
 import Coop.mapper.InviteMapper;
@@ -25,6 +25,7 @@ import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Active;
+import Coop.model.ActivePoint;
 import Coop.model.ChartData;
 import Coop.model.IComment;
 import Coop.model.Invite;
@@ -51,6 +52,7 @@ public class ProjectController {
 	@Autowired IssueMapper issueMapper;
 	@Autowired ICommentMapper iCommentMapper;
 	@Autowired MobileAuthenticationService mobileAuthenticationService;
+	@Autowired ActivePointMapper activePointMapper;
 	
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -79,9 +81,12 @@ public class ProjectController {
 	   model.addAttribute("ProjectList",projectMapper.selectById(userService.getCurrentUser()));
        return "layout/main/home";
 	}
-	@RequestMapping(value = "/edit.do",method = RequestMethod.POST)
-	 public String edit(Project project,Model model) {
-		projectMapper.update(project);
+	@RequestMapping(value = "/{projectId}/edit.do",method = RequestMethod.POST)
+	 public String edit(@PathVariable String projectId,ActivePoint activePoint,Model model) {
+		Project project = projectMapper.selectByProjectId(Integer.parseInt(projectId));
+		activePoint.setProjectId(project.getId());
+		
+		activePointMapper.insert(activePoint);
 		NoticeUser noticeUser=  new NoticeUser();
 		noticeUser.setProjectId(project.getId());
 		noticeUser.setMember(userService.getCurrentUser().getId());
@@ -207,6 +212,32 @@ public class ProjectController {
 			
 	}
 	@ResponseBody
+	@RequestMapping(value = "/create.do",method = RequestMethod.POST)
+	 public String creatDo(@RequestParam String name,@RequestParam String owner,
+			 @RequestParam String des,HttpServletResponse response) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+				Project project = new Project();
+				project.setDes(des);
+				project.setName(name);
+				project.setOwner(owner);
+				
+				projectMapper.insertProject(project);
+				Pro_User user = new Pro_User();
+				user.setCont(0);
+				user.setProId(project.getId());
+				user.setUserId(userService.getCurrentUser().getId());
+				proUserMapper.insertPro_user(user);
+				return "success";
+			}
+			else{
+				return "fail";
+			}
+			
+	        
+			
+	}
+	@ResponseBody
 	@RequestMapping(value="/issueMakeMobile.do",method = RequestMethod.POST)
 	public String issueMakeMobile(@RequestParam String projectId,
 			@RequestParam String label,@RequestParam String name,@RequestParam String des,Model model,HttpServletResponse response){
@@ -314,20 +345,17 @@ public class ProjectController {
 			
 	}
 	 @RequestMapping(value = "/mobileEdit.do",method = RequestMethod.POST)
-	 public String editMobile(@RequestParam String id,@RequestParam String owner,@RequestParam String des ,
-			 Model model,@RequestParam String name) {
+	 public String editMobile(@RequestParam String id,@RequestParam String fileUpload,@RequestParam String issueMake ,
+			 Model model,@RequestParam String etc) {
 		
 			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
-				Project project = new Project();
-				project.setId(Integer.parseInt(id));
-				project.setDes(des);
-				project.setName(name);
-				project.setOwner(owner);
-				if(project.getName()==null || project.getName().isEmpty()){
-					return "check Project Name";
-				}
-				if(project.getOwner()==null || project.getOwner().isEmpty()){
-					return "check Owner Name";
+				Project project = projectMapper.selectByProjectId(Integer.parseInt(id));
+				if(project.getOwner().equals(userService.getCurrentUser().getId())){
+					ActivePoint activePoint = new ActivePoint();
+					activePoint.setEtc(Integer.parseInt(etc));
+					activePoint.setFileUpload(Integer.parseInt(fileUpload));
+					activePoint.setIssueMake(Integer.parseInt(issueMake));
+					activePoint.setProjectId(project.getId());
 				}
 				
 				return "success";

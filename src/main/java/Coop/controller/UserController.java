@@ -116,36 +116,56 @@ public class UserController {
 	 	
 	 	@ResponseBody
 	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
-		 public User edit(@RequestParam String password,@RequestParam String email,
-			 @RequestParam MultipartFile uploadedFile) throws IOException {
+		 public User edit(@RequestParam String password,@RequestParam String email,@RequestParam String id
+			 ) throws IOException {
 	 		
 	 		
-			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser()) && userService.getCurrentUser().getId().equals(id)){
 				User user = new User();
-		 		 String id = userService.getCurrentUser().getId();
+		 		 
 		 		 user.setId(id);
 		 		 user.setEmail(email);
 		 		 user.setPassword(userService.encryptPasswd(password));
 		 		 user.setImg(id);
 				 
 				 
-				 if(uploadedFile.getSize()>0 && uploadedFile!=null){
-					 Image image = new Image();
-					 image.setUserId(id);
-					 image.setFileName(Paths.get(uploadedFile.getOriginalFilename()).getFileName().toString());
-					 System.out.println(image.getFileName());
-					 image.setFileSize((int)uploadedFile.getSize());
-					 image.setData(uploadedFile.getBytes());
-					 //imageMapper.insert(image);
-					 fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
-					 userMapper.updateUserImage(user);
-				 }
-				
+				 
 				 return user;
 				
 			}
 			else{
 				return null;
+			}
+	 		 
+		 }
+	 	@ResponseBody
+	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
+		 public String edit(@RequestParam String id,@RequestParam byte[] data
+			 ) throws IOException {
+	 		
+	 		
+			if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser()) && userService.getCurrentUser().getId().equals(id)){
+				 
+				if(data!=null){
+	                Image image = new Image();
+	                image.setUserId(id);
+	                image.setFileName(id);
+	                image.setFileSize((int)data.length);
+	                image.setData(data);
+	                imageMapper.insert(image);
+	                //fileService.writeFile(uploadedFile,"C:\\Users\\USER\\Documents\\website\\neonWork\\Coop\\src\\main\\webapp\\res\\images",id+".jpg");
+	                User user = userMapper.selectById(id);
+	                user.setImg(id);
+	                userMapper.updateUserImage(user);
+	             }
+	            
+				 
+				 
+				 return "success";
+				
+			}
+			else{
+				return "fail";
 			}
 	 		 
 		 }

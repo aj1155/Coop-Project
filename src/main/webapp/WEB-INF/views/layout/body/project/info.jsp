@@ -274,60 +274,89 @@ label {
   </div>
    <div id="setting" class="tab-pane fade"  style="font-family: 'Lato', sans-serif;" >
      
-
+	
+   
+   <div class="subhead">
+    <p class="subhead-description" style="font-size:10pt; color:#888;">
+     	기여도 점수를 설정하세요
+    </p>
+    <hr/>
+   </div>
            
 
-                <div class="col-lg-8 col-lg-offset-2">
-
-                    <h1>Contact form Tutorial from <a href="http://localhost:6472/Coop/home/index.do">Coop</a></h1>
-
-                    <p class="lead">Modify project detail and set up next Description...</p>
-
-
-                    <form id="contact-form" method="post" action="/Coop/project/edit.do" role="form">
-						<input type="hidden" id="id" name="id" value="${project.id}">
-                        <div class="messages"></div>
-
-                        <div class="controls">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="form_name">ProjectName *</label>
-                                        <input id="form_name" type="text" name="name" value="${project.name }"class="form-control" placeholder="Please enter your ProjectName *" required="required" data-error="Firstname is required.">
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="form_lastname">Owner *</label>
-                                        <input id="form_lastname" type="text" name="owner" value="${project.owner }" class="form-control" placeholder="Please enter Owner *" required="required" data-error="Lastname is required.">
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="form_message">Description *</label>
-                                        <input id="form_message" name="des" value="${project.des }" class="form-control" placeholder="Message for me *" rows="4" required="required" data-error="Please,leave us a message."></input>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <input type="submit" class="btn btn-success btn-send" value="Update">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="text-muted"><strong>*</strong> These fields are required. Contact form template by <a href="http://bootstrapious.com" target="_blank">Coop</a>.</p>
-                                </div>
-                            </div>
-                     
-					</div>
-                    </form>
-
-                </div><!-- /.8 -->
+   <div class="subbody" >
+      <form class="form-horizontal" method="POST" action="/Coop/project/${project.id}/edit.do">
+  <fieldset>
+    <div class="control-group">
+      <!-- Username -->
+      <label class="control-label"  for="owner">파일업로드</label>
+      <div class="controls">
+        <select id="country" name="fileUpload" class="input-xlarge" required="">
+                                        <option value="1" selected="">1</option>
+                                                                                    
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                    <option value="4">4</option>
+                                                                                    <option value="5">5</option>
+                                                                                 
+                                                                                
+                                        
+        </select>
+        
+      </div>
+    </div>
+ 
+    <div class="control-group">
+      <!-- E-mail -->
+      <label class="control-label" for="name">이슈생성</label>
+      <div class="controls">
+        <select id="country" name="issueMake" class="input-xlarge" required="">
+                                        <option value="1" selected="">1</option>
+                                                                                    
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                    <option value="4">4</option>
+                                                                                    <option value="5">5</option>
+                                                                                 
+                                                                                
+                                        
+        </select>
+        
+      </div>
+    </div>
+ 
+    <div class="control-group">
+      <!-- Password-->
+      <label class="control-label" for="des">기타</label>
+      <div class="controls">
+        <select id="country" name="etc" class="input-xlarge" required="">
+                                        <option value="1" selected="">1</option>
+                                                                                    
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                    <option value="4">4</option>
+                                                                                    <option value="5">5</option>
+                                                                                 
+                                                                                
+                                        
+        </select>
+        
+      </div>
+    </div>
+    
+    
+ 
+ 
+    <div class="control-group">
+      <!-- Button -->
+      <div class="controls">
+        <button type="submit" class="btn btn-success">Save</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+           
+     </div> 
 
  
 

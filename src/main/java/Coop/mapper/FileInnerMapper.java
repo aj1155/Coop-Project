@@ -9,6 +9,7 @@ public interface FileInnerMapper {
 	FileInner selectById(int id);
 	List<FileInner> selectByRefFileId(int id);
 	List<FileInner> selectByUserId(String userId);
+	List<FileInner> selectByName(String name);
 	void insert(FileInner file);
 	void delete(int id);
 

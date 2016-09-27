@@ -21,6 +21,7 @@ import Coop.mapper.ICommentMapper;
 import Coop.mapper.InviteMapper;
 import Coop.mapper.IssueMapper;
 import Coop.mapper.NoticeMapper;
+import Coop.mapper.NoticeUserMapper;
 import Coop.mapper.ProUserMapper;
 import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
@@ -35,8 +36,13 @@ import Coop.model.NoticeUser;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.model.User;
+import Coop.model.UserKey;
+import Coop.service.IOSPushService;
 import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
+import javapns.communication.exceptions.CommunicationException;
+import javapns.communication.exceptions.KeystoreException;
+import javapns.devices.exceptions.InvalidDeviceTokenFormatException;
 
 @Controller
 @RequestMapping("/project")
@@ -53,6 +59,8 @@ public class ProjectController {
 	@Autowired ICommentMapper iCommentMapper;
 	@Autowired MobileAuthenticationService mobileAuthenticationService;
 	@Autowired ActivePointMapper activePointMapper;
+	@Autowired NoticeUserMapper noticeUserMapper;
+	@Autowired IOSPushService iosPushService;
 	
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -172,17 +180,45 @@ public class ProjectController {
 		return "layout/project/issue";
 	}
 	@RequestMapping(value="/{projectId}/issue.do",method = RequestMethod.POST)
-	public String issueMake(@PathVariable String projectId,Issue issue,Model model){
+	public String issueMake(@PathVariable String projectId,Issue issue,Model model) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException{
 		issue.setProjectId(Integer.parseInt(projectId));
 		issue.setUserId(userService.getCurrentUser().getId());
 		issue.setUserName(userService.getCurrentUser().getName());
 		
 		issueMapper.insert(issue);
-		System.out.println(issue);
+		Project project = projectMapper.selectByProjectId(Integer.parseInt(projectId));
 		
-		NoticeUser noticeUser=  new NoticeUser();
+		Notice notice = new Notice();
+		notice.setProjectId(Integer.parseInt(projectId));
+		notice.setUserId(userService.getCurrentUser().getId());
+		String des = userService.getCurrentUser().getName()+"님이 "+project.getName()+" 에 이슈를 생성했습니다";
+		notice.setDes(des);
+		noticeMapper.insert(notice);
+		NoticeUser noticeUser = new NoticeUser();
+		noticeUser.setId(notice.getId());
 		noticeUser.setProjectId(Integer.parseInt(projectId));
-		noticeUser.setMember(userService.getCurrentUser().getId());
+		
+		
+		
+		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+		
+		for(int i=0;i<proUser.size();i++){
+			
+			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+				
+				noticeUser.setMember(proUser.get(i).getId());
+				noticeUserMapper.insert(noticeUser);
+				UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+				if(userKey!=null){
+					iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+project.getName()+" 에 이슈를 남겼습니다");
+				}
+				
+			}
+			
+      
+       
+	  }
+		
 		model.addAttribute("noticeList",noticeMapper.select(noticeUser));
 		model.addAttribute("project",projectMapper.selectByProjectId(Integer.parseInt(projectId)));
 		model.addAttribute("fileList", fileMapper.selectByProjectId(Integer.parseInt(projectId)));
@@ -240,7 +276,7 @@ public class ProjectController {
 	@ResponseBody
 	@RequestMapping(value="/issueMakeMobile.do",method = RequestMethod.POST)
 	public String issueMakeMobile(@RequestParam String projectId,
-			@RequestParam String label,@RequestParam String name,@RequestParam String des,Model model,HttpServletResponse response){
+			@RequestParam String label,@RequestParam String name,@RequestParam String des,Model model,HttpServletResponse response) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException{
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			Issue issue = new Issue();
@@ -251,6 +287,37 @@ public class ProjectController {
 			issue.setLabel(label);
 			issue.setName(name);
 			issueMapper.insert(issue);
+			Project project = projectMapper.selectByProjectId(Integer.parseInt(projectId));
+			Notice notice = new Notice();
+			notice.setProjectId(Integer.parseInt(projectId));
+			notice.setUserId(userService.getCurrentUser().getId());
+			String des2 = userService.getCurrentUser().getName()+"님이 "+project.getName()+" 에 이슈를 생성했습니다";
+			notice.setDes(des2);
+			noticeMapper.insert(notice);
+			NoticeUser noticeUser = new NoticeUser();
+			noticeUser.setId(notice.getId());
+			noticeUser.setProjectId(Integer.parseInt(projectId));
+			
+			
+			
+			List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
+			
+			for(int i=0;i<proUser.size();i++){
+				
+				if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+					
+					noticeUser.setMember(proUser.get(i).getId());
+					noticeUserMapper.insert(noticeUser);
+					UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+					if(userKey!=null){
+						iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+project.getName()+" 에 이슈를 남겼습니다");
+					}
+					
+				}
+				
+	      
+	       
+		  }
 			return "success";
 		}
 		else{
@@ -320,7 +387,7 @@ public class ProjectController {
 	public Issue issueMobileInfo(@RequestParam String issueId,Model model){
 		
 		Issue issue = issueMapper.selectById(Integer.parseInt(issueId));
-		if(issue.getUserId().equals(userService.getCurrentUser())){
+		if(issue.getUserId().equals(userService.getCurrentUser().getId())){
 			return issue;
 			
 		}

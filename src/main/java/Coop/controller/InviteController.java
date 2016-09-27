@@ -98,6 +98,27 @@ public class InviteController {
 			return null;
 		}
 		
+		
+	}
+	@ResponseBody
+	@RequestMapping(value="/mobileInvite.do",method = RequestMethod.POST)
+	public void mobileInv(
+			HttpServletResponse response,@RequestParam String projectId,@RequestParam String inviteUser){
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			
+			Invite invite = new Invite();
+			invite.setProjectId(Integer.parseInt(projectId));
+			invite.setSender(userService.getCurrentUser().getId());
+			invite.setRecipient(inviteUser);
+			inviteMapper.insert(invite);
+			
+		}
+		else{
+			return;
+		}
+		
+		
 	}
 
 }

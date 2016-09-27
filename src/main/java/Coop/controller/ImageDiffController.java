@@ -29,7 +29,7 @@ public class ImageDiffController implements Runnable {
 	
 	public void run(){
 		try {
-			System.out.println("왜 안돼 시발");
+			
 			//String[] cmd = new String[] {"compare","C:/ImageMagick/temp0.png","C:/ImageMagick/temp1.png","C:/Users/USER/kimjava/TestImage/src/tempcompareImage.png"};
 			//Process process = Runtime.getRuntime().exec(cmd);
 			

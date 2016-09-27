@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings
+.p12
 .springBeans
 /bin/
 

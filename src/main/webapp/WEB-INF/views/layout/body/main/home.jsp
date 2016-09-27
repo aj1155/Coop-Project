@@ -2,9 +2,11 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
 <!DOCTYPE html>
 <html>
 <head>
+<link href='/Coop/res/css/profile.css' rel='stylesheet' type='text/css'>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Coop</title>
 <script>
@@ -96,10 +98,47 @@ ul.mylist li, ol.mylist li {
       		 <img id="user_img" src="/Coop/res/images/null.jpg" class="avatar img-circle" alt="avatar" style="height:230px; width:230px;"/>
       </c:if>
       <input id="user_id" type="hidden" value="<sec:authentication property="user.id" />">
-      <div><h1><sec:authentication property="user.id" /></h1></div>
+      <div><div class="profile-usertitle"  style="margin-right:260px;">
+					<div class="profile-usertitle-name">
+						${user.name }
+					</div>
+			
+				</div></div>
       <hr/>
-      <div><h3><sec:authentication property="user.name" /></h3></div>
-      <div></div>
+    
+      <div>
+      	
+				<!-- END SIDEBAR USER TITLE -->
+				<!-- SIDEBAR BUTTONS -->
+				
+				<!-- END SIDEBAR BUTTONS -->
+				<!-- SIDEBAR MENU -->
+				<div class="profile-usermenu">
+					<ul class="nav">
+						<li class="active">
+							<a href="#">
+							<i class="glyphicon glyphicon-home"></i>
+							MyProject </a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="glyphicon glyphicon-user"></i>
+							Account Settings </a>
+						</li>
+						<li>
+							<a href="#" target="_blank">
+							<i class="glyphicon glyphicon-ok"></i>
+							Tasks </a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="glyphicon glyphicon-flag"></i>
+							Message </a>
+						</li>
+					</ul>
+				</div>
+				<!-- END MENU -->
+      </div>
       
       </div>
     </div>

@@ -19,11 +19,14 @@ import org.springframework.web.servlet.ModelAndView;
 import Coop.mapper.ImageMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Image;
-import Coop.model.NoticeUser;
 import Coop.model.User;
+import Coop.model.UserKey;
 import Coop.service.FileService;
 import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
+import javapns.communication.exceptions.CommunicationException;
+import javapns.communication.exceptions.KeystoreException;
+import javapns.devices.exceptions.InvalidDeviceTokenFormatException;
 
 
 
@@ -116,7 +119,7 @@ public class UserController {
 	 	
 	 	@ResponseBody
 	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
-		 public User edit(@RequestParam String password,@RequestParam String email,@RequestParam String id
+		 public User editProfile(@RequestParam String password,@RequestParam String email,@RequestParam String id
 			 ) throws IOException {
 	 		
 	 		
@@ -127,7 +130,7 @@ public class UserController {
 		 		 user.setEmail(email);
 		 		 user.setPassword(userService.encryptPasswd(password));
 		 		 user.setImg(id);
-				 
+				 userMapper.updateUser(user);
 				 
 				 
 				 return user;
@@ -139,8 +142,8 @@ public class UserController {
 	 		 
 		 }
 	 	@ResponseBody
-	 	@RequestMapping(value="/mobileProfile.do", method = RequestMethod.POST)
-		 public String edit(@RequestParam String id,@RequestParam byte[] data
+	 	@RequestMapping(value="/mobileImage.do", method = RequestMethod.POST)
+		 public String editImage(@RequestParam String id,@RequestParam byte[] data
 			 ) throws IOException {
 	 		
 	 		
@@ -182,5 +185,37 @@ public class UserController {
 			}
 	 		
 		 }
+	 	
+	 	 @ResponseBody
+		 @RequestMapping(value="/userKey.do", method=RequestMethod.POST)
+		 public void fcm(HttpServletResponse response,@RequestParam String key) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException {
+		   
+	 		 response.addHeader("Access-Control-Allow-Origin", "*");
+	 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+	 			UserKey pastKey = userMapper.selectByKey(userService.getCurrentUser().getId());
+	 			UserKey userKey = new UserKey();
+				userKey.setUserId(userService.getCurrentUser().getId());
+				userKey.setUserkey(key);
+	 			if(pastKey==null){
+	 				 
+		 			 userMapper.insertKey(userKey);
+		 		 }
+	 			 else{
+	 				if(!pastKey.getUserkey().equals(key)){
+	 					
+	 					userMapper.updateKey(userKey);
+	 				}
+	 			 }
+			}
+			else{
+				return;
+			}
+	 		 
+	 		 
+		    	
+		    	
+				
+		 }
+	 	
 		 
 }

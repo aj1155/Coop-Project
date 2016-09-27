@@ -10,11 +10,22 @@
         FROM   file
         WHERE  id = #{id}
     </select>
+    <select id="selectByNoData" resultType="Coop.model.File">
+       SELECT  id,projectId, userId, fileName, fileSize, fileTime,des
+        FROM   file
+        WHERE  projectId = #{projectId}
+    </select>
     <select id="selectByProjectId" resultType="Coop.model.File">
         SELECT id, projectId, userId, fileName, fileSize, fileTime
         FROM   file
         WHERE  projectId = #{projectId}
     </select>
+    
+     <select id="selectByName" resultType="Coop.model.File">
+       SELECT  id,projectId, userId, fileName, fileSize, fileTime,des
+        FROM   file
+        WHERE  fileName like CONCAT('%', #{name} , '%')
+     </select>
 
     <select id="selectByUserId" resultType="Coop.model.File">
         SELECT *

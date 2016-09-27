@@ -20,7 +20,10 @@
 		from pro_user
 		where projectId = #{id});
     </select>
-    
+    <select id="selectByKey" resultType = "Coop.model.UserKey">
+    	SELECT * FROM user_key
+    	WHERE userId = #{userId}
+    </select>
     
     
     <select id="loginProcess" parameterType = "String" resultType = "Coop.model.User">
@@ -33,12 +36,28 @@
     	values(#{id},#{password},#{name},#{email})
     </insert>
     
+    <insert id="insertKey">
+    	INSERT INTO user_key(userId,userKey)
+    	values(#{userId},#{userKey})
+    </insert>
+    
    <update id="updateUserImage">
         UPDATE user 
         SET img = #{img}
         WHERE id = #{id}
     </update>
     
+    <update id="updateUser">
+        UPDATE user 
+        SET  img = #{img},password = #{password},email=#{email)
+        WHERE id = #{id}
+    </update>
+    
+    <update id="updateKey">
+        UPDATE user_key 
+        SET userKey = #{userKey}
+        WHERE userId = #{userId}
+    </update>
     
 
 </mapper>

@@ -38,12 +38,17 @@ import Coop.model.PngFiles;
 import Coop.model.Pro_User;
 import Coop.model.Project;
 import Coop.model.User;
+import Coop.model.UserKey;
 import Coop.service.FileService;
+import Coop.service.IOSPushService;
 import Coop.service.ImageCompareService;
 import Coop.service.MobileAuthenticationService;
 import Coop.service.PDFChange;
 import Coop.service.PPTChange;
 import Coop.service.UserService;
+import javapns.communication.exceptions.CommunicationException;
+import javapns.communication.exceptions.KeystoreException;
+import javapns.devices.exceptions.InvalidDeviceTokenFormatException;
 @Controller
 @RequestMapping("/file")
 public class FileController {
@@ -64,6 +69,7 @@ public class FileController {
 	@Autowired NoticeMapper noticeMapper;
 	@Autowired NoticeUserMapper noticeUserMapper;
 	@Autowired MobileAuthenticationService mobileAuthenticationService;
+	@Autowired IOSPushService iosPushService;
 	
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.GET)
@@ -114,7 +120,7 @@ public class FileController {
 	
 	@RequestMapping(value = "/{projectId}/{userId}/create.do",method = RequestMethod.POST)
 	public String create(@PathVariable String projectId,@PathVariable String userId,@RequestParam("des") String des,
-			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException {
+			@RequestParam("file") MultipartFile uploadedFile,Model model) throws IOException, CommunicationException, KeystoreException, InvalidDeviceTokenFormatException {
 		String user = userId;
 		String project = projectId;
 		Notice notice = new Notice();
@@ -123,6 +129,7 @@ public class FileController {
 		pro.setProId(Integer.parseInt(projectId));
 		pro.setUserId(userId);
 		proUserMapper.updateCont(pro);
+		Project proj = projectMapper.selectByProjectId(Integer.parseInt(project));
 		File file = new File();
 		if(uploadedFile.getSize()>0){
 			 
@@ -168,6 +175,10 @@ public class FileController {
 				noticeUser.setMember(proUser.get(i).getId());
 				
 				noticeUserMapper.insert(noticeUser);
+				UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+				if(userKey!=null){
+					iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+proj.getName()+"에 새로운 파일을 업로드 했습니다.");
+				}
 			}
 			
 					
@@ -185,7 +196,7 @@ public class FileController {
 	
 	@RequestMapping(value = "/{projectId}/{userId}/{fileId}/create2.do",method = RequestMethod.POST)
 	public String create2(@PathVariable String projectId,@PathVariable String userId,@RequestParam("des") String des,
-			@RequestParam("file") MultipartFile uploadedFile,Model model,@PathVariable String fileId) throws IOException {
+			@RequestParam("file") MultipartFile uploadedFile,Model model,@PathVariable String fileId) throws IOException, CommunicationException, KeystoreException, InvalidDeviceTokenFormatException {
 		List<FileInner> fileInner = fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId));
 		
 		Notice notice = new Notice();
@@ -311,6 +322,10 @@ public class FileController {
 					noticeUser.setMember(proUser.get(i).getId());
 					
 					noticeUserMapper.insert(noticeUser);
+					UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+					if(userKey!=null){
+						iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+resFile.getFileName()+"에 새 버전 파일을 업로드 했습니다");
+					}
 				}
 				
 						
@@ -359,7 +374,7 @@ public class FileController {
         
     }
 	@RequestMapping(value = "/{proId}/{fileId}/comment.do",method = RequestMethod.POST)
-	public String comment(@PathVariable String proId,@PathVariable String fileId,@RequestParam String text,Model model)  {
+	public String comment(@PathVariable String proId,@PathVariable String fileId,@RequestParam String text,Model model) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException  {
 		Comment comment = new Comment();
 		Notice notice = new Notice();
 		comment.setProjectId(Integer.parseInt(proId));
@@ -378,6 +393,7 @@ public class FileController {
 		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(proId));
 		
 		for(int i=0;i<proUser.size();i++){
+			
 			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
 				NoticeUser noticeUser = new NoticeUser();
 				noticeUser.setId(notice.getId());
@@ -385,10 +401,16 @@ public class FileController {
 				noticeUser.setMember(proUser.get(i).getId());
 				
 				noticeUserMapper.insert(noticeUser);
+				UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+				if(userKey!=null){
+					iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+file.getFileName()+" 파일에 댓글을 남겼습니다");
+				}
+				
 			}
 			
 					
 		}
+		
 		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(proId)));
 		model.addAttribute("file",fileMapper.selectById(Integer.parseInt(fileId)));
 		model.addAttribute("commentList",commentMapper.selectByFileId(Integer.parseInt(fileId)));
@@ -482,7 +504,7 @@ public class FileController {
 		
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
-			return fileMapper.selectByProjectId(Integer.parseInt(id));	
+			return fileMapper.selectByNoData(Integer.parseInt(id));	
 		}
 		else{
 			return null;
@@ -492,8 +514,8 @@ public class FileController {
 	}
 	@ResponseBody
 	@RequestMapping(value = "/commentWrite.do",method = RequestMethod.POST)
-	public String commentList(@RequestParam String proId,@RequestParam String fileId,@RequestParam String text,Model model,
-			HttpServletResponse response)  {
+	public void commentList(@RequestParam String proId,@RequestParam String fileId,@RequestParam String text,Model model,
+			HttpServletResponse response) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException  {
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			Comment comment = new Comment();
@@ -501,12 +523,42 @@ public class FileController {
 			comment.setFileId(Integer.parseInt(fileId));
 			comment.setUserId(userService.getCurrentUser().getId());
 			comment.setContent(text);
-			
 			commentMapper.insert(comment);
-	        return "success";	
+			Notice notice = new Notice();
+			File file = fileMapper.selectById(Integer.parseInt(fileId));
+			notice.setProjectId(Integer.parseInt(proId));
+			notice.setUserId(userService.getCurrentUser().getId());
+			String des = userService.getCurrentUser().getName()+"님이 "+file.getFileName()+" 파일에 댓글을 남겼습니다";
+			notice.setDes(des);
+			notice.setFileId(file.getId());
+			noticeMapper.insert(notice);
+			
+			
+			
+			List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(proId));
+			
+			for(int i=0;i<proUser.size();i++){
+				
+				if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+					NoticeUser noticeUser = new NoticeUser();
+					noticeUser.setId(notice.getId());
+					noticeUser.setProjectId(Integer.parseInt(proId));
+					noticeUser.setMember(proUser.get(i).getId());
+					
+					noticeUserMapper.insert(noticeUser);
+					UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+					if(userKey!=null){
+						iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+file.getFileName()+" 파일에 댓글을 남겼습니다");
+					}
+					
+				}
+				
+	      
+	       
+		 }
 		}
 		else{
-			return null;
+			return;
 		}
 		
 		
@@ -534,6 +586,36 @@ public class FileController {
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
 			
 			return fileInnerMapper.selectByRefFileId(Integer.parseInt(fileId));
+			
+		}
+		else{
+			return null;
+		}
+		
+        
+    }
+	@ResponseBody
+	@RequestMapping(value = "/mobileSearch.do",method = RequestMethod.GET)
+	public List<File> searchMobile(@RequestParam String name,Model model,HttpServletResponse response) throws IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			
+			return fileMapper.selectByName(name);
+			
+		}
+		else{
+			return null;
+		}
+		
+        
+    }
+	@ResponseBody
+	@RequestMapping(value = "/mobileInnerSearch.do",method = RequestMethod.GET)
+	public List<FileInner> searchInnerMobile(@RequestParam String name,Model model,HttpServletResponse response) throws IOException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
+			
+			return fileInnerMapper.selectByName(name);
 			
 		}
 		else{
@@ -590,7 +672,7 @@ public class FileController {
 	@RequestMapping(value = "/upload.do",method = RequestMethod.POST)
 	public String upload(@RequestParam String projectId,@RequestParam("des") String des,
 			@RequestParam("fileData") byte[] data ,@RequestParam("fileName") String fileName,
-			Model model,HttpServletResponse response) throws IOException {
+			Model model,HttpServletResponse response) throws IOException, CommunicationException, KeystoreException, InvalidDeviceTokenFormatException {
 		
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		if(mobileAuthenticationService.AuthenticationUser(userService.getCurrentUser())){
@@ -598,6 +680,7 @@ public class FileController {
 			String project = projectId;
 			Notice notice = new Notice();
 			Pro_User pro = new Pro_User();
+			Project proj = projectMapper.selectByProjectId(Integer.parseInt(project));
 			pro.setCont(3);
 			pro.setProId(Integer.parseInt(projectId));
 			pro.setUserId(user);
@@ -632,6 +715,10 @@ public class FileController {
 					noticeUser.setMember(proUser.get(i).getId());
 					
 					noticeUserMapper.insert(noticeUser);
+					UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+					if(userKey!=null){
+						iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+proj.getName()+"에 새로운 파일을 업로드 했습니다.");
+					}
 				}
 				
 						

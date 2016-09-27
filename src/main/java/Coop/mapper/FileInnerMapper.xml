@@ -15,6 +15,11 @@
         FROM   fileinner
         WHERE  projectId = #{projectId}
     </select>
+    <select id="selectByName" resultType="Coop.model.File">
+       SELECT  id,projectId, userId, fileName, fileSize, fileTime,des
+        FROM   fileInner
+        WHERE  fileName like CONCAT('%', #{name} , '%')
+     </select>
 
     <select id="selectByUserId" resultType="Coop.model.FileInner">
         SELECT *

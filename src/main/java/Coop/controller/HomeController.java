@@ -18,10 +18,14 @@ import Coop.mapper.ProjectMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.ChartData;
 import Coop.model.Invite;
-import Coop.model.NoticeUser;
 import Coop.model.User;
+import Coop.service.HTTPClientService;
+import Coop.service.IOSPushService;
 import Coop.service.MobileAuthenticationService;
 import Coop.service.UserService;
+import javapns.communication.exceptions.CommunicationException;
+import javapns.communication.exceptions.KeystoreException;
+import javapns.devices.exceptions.InvalidDeviceTokenFormatException;
 
 @Controller
 @RequestMapping("/home")
@@ -32,6 +36,8 @@ public class HomeController {
 		@Autowired UserService userService;
 		@Autowired InviteMapper inviteMapper;
 		@Autowired MobileAuthenticationService mobileAuthenticationService;
+		@Autowired HTTPClientService httpClientService;
+		@Autowired IOSPushService iosPushService;
 		
 		@RequestMapping(value="/index.do", method=RequestMethod.GET)
 	    public String index(Model model) {
@@ -99,6 +105,20 @@ public class HomeController {
 				return null;
 			}
 	    	
+			
+	    }
+	    @ResponseBody
+		@RequestMapping(value="/fcm.do", method=RequestMethod.GET)
+	    public void fcm(HttpServletResponse response) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException {
+	    	
+	    	/*
+	    	FCM fcm = new FCM();
+			response.addHeader("Access-Control-Allow-Origin", "*");
+	    	httpClientService.post("https://fcm.googleapis.com/fcm/send", fcm);
+			*/
+	    	
+	    	//iosPushService.push();
+	    	iosPushService.iosPush();
 			
 	    }
 		

@@ -46,19 +46,59 @@
             </list>
         </property>
     </bean>
-    
-    <bean id="myDataSource1"
+    <!-- 
+    <bean id="myDataSource12"
         class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/coop" />
+        <property name="url" value="jdbc:mysql://52.43.199.148:3306/coop;autoReconnection=true"/>
         <property name="username" value="root" />
         <property name="password" value="aksrltjqj1!" />
     </bean>
+     -->
+    <bean id="myDataSource1" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://52.43.199.148:3306/coop"/>
+        <property name="username" value="root"/>
+        <property name="password" value="aksrltjqj1!"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="timeBetweenEvictionRunsMillis" value="7200000"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="connectionProperties" value="autoReconnection=true;"/>
+        <property name="initialSize" value="5"/>
+        <property name="maxActive" value="20"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxWait" value="3000"/>
+        <property name="poolPreparedStatements" value="true"></property>
+        <property name="maxOpenPreparedStatements" value="50"></property>
+     
+        <!-- 특정 시간마다 validationQuery를 실행 셋팅 시작 -->
+        <!--  
+        <property name="validationQuery" value="select 1"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="timeBetweenEvictionRunsMillis" value="7200000"/>
+        <property name="connectionProperties" value="autoReconnection=true;"/>
+        -->
+        <!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
+        
+    </bean>
+    
+    <!--  
+    <bean id="myDataSource1" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+    	<constructor-arg ref="myDataSourceSpied1"/>
+    	<property name="logFormatter">
+    		<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+    			<property name="loggingType" value="MULTI_LINE"/>
+    			<property name="sqlPrefix" value="SQL=>"/>
+    		</bean>
+    	</property>
+    </bean>
+	-->
+
+
 
     <bean id="sqlSessionFactory1" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="myDataSource1" />
-    </bean>
-
+    </bean>	
     <bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="Coop" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory1"/>

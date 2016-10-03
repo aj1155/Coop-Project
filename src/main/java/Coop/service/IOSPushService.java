@@ -19,7 +19,8 @@ import javapns.notification.PushedNotification;
 public class IOSPushService {
 	
 	private static String token = "ac6cad02f0cc9a770b203af13cf2e34978a6c26e23fa67092f1899c6ea7dde96";
-	private static String keystore = "/usr/share/tomcat9/webapps/Coop/res/push/apns_pro.p12";
+	//private static String keystore = "/usr/share/tomcat9/webapps/Coop/res/push/apns_pro.p12";
+	private static String keystore = "C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/push/apns_pro.p12";
 	private static String password = "coop!@#$";
 	
 	
@@ -51,7 +52,7 @@ public class IOSPushService {
 
 		 
 		PushNotificationManager pushManager = new PushNotificationManager();
-		pushManager.initializeConnection(new AppleNotificationServerBasicImpl("/usr/share/tomcat9/webapps/Coop/res/push/apns_pro.p12", "coop!@#$", false));
+		pushManager.initializeConnection(new AppleNotificationServerBasicImpl("C:/Users/USER/Documents/website/neonWork/Coop/src/main/webapp/res/push/apns_pro.p12", "coop!@#$", false));
 		List<PushedNotification> notifications = new ArrayList<PushedNotification>();
 		 
 		PushNotificationPayload payload = PushNotificationPayload.complex();

@@ -37,11 +37,12 @@ $(function(){
  		})
 		
 	});
+	/*
 	function chartShow(chartData){
 		var chart = new CanvasJS.Chart("chartContainer",
 				{
 					title:{
-						text: "Member Contribute"
+						text: "Project Contribute"
 					},
 			                animationEnabled: true,
 					legend:{
@@ -65,6 +66,25 @@ $(function(){
 					]
 				});
 				chart.render();
+				*/
+				function chartShow(data) {
+					var chart = new CanvasJS.Chart("chartContainer",
+					{
+						animationEnabled: true,
+						title:{
+							text: "Project Contribute"
+						},
+						animationEnabled: true,
+						data: [
+						{
+							type: "column", //change type to bar, line, area, pie, etc
+							dataPoints: data
+						}
+						]
+						});
+
+					chart.render();
+		
 		
 	};
 	$('.star').on('click', function () {

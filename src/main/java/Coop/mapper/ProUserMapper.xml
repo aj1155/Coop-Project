@@ -26,7 +26,7 @@
     	WHERE projectId = #{id}
     </select>
     <select id="selectCont" resultType = "Coop.model.ChartData">
-    	select u.name 'legendText', pro.cont 'y'
+    	select u.name 'label', pro.cont 'y'
 		from pro_user pro join user u on pro.userId = u.id
 		where pro.projectId = #{id}
     </select>

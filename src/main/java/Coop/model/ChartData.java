@@ -2,15 +2,15 @@ package Coop.model;
 
 public class ChartData {
 	String legendText;
-	String indexLabel;
+	String label;
 	int y;
 
-	public String getIndexLabel() {
-		return indexLabel;
+	public String getLabel() {
+		return label;
 	}
 
-	public void setIndexLabel(String indexLabel) {
-		this.indexLabel = indexLabel;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public String getLegendText() {
@@ -18,7 +18,7 @@ public class ChartData {
 	}
 
 	public void setLegendText(String legendText) {
-		this.indexLabel = legendText;
+		this.label = legendText;
 		this.legendText = legendText;
 	}
 

@@ -39,6 +39,7 @@
 	 		})
 			
 		});
+		/*
 		function chartShow(chartData){
 			var chart = new CanvasJS.Chart("chartContainer",
 					{
@@ -67,8 +68,27 @@
 						]
 					});
 					chart.render();
+					*/
+					function chartShow(data) {
+						var chart = new CanvasJS.Chart("chartContainer",
+						{
+							animationEnabled: true,
+							title:{
+								text: "Project Contribute"
+							},
+							animationEnabled: true,
+							data: [
+							{
+								type: "column", //change type to bar, line, area, pie, etc
+								dataPoints: data
+							}
+							]
+							});
+
+						chart.render();
 			
 		};
+		
 		
 	});
 </script>

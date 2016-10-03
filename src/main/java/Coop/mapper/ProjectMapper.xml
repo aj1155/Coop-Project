@@ -40,7 +40,7 @@
     </select>
 	
 	<select id="selectCont" resultType = "Coop.model.ChartData">
-    	select p.name 'legendText', pro.cont 'y'
+    	select p.name 'label', pro.cont 'y'
 		from project p join pro_user pro
 		where p.id in (select projectId
 		from pro_user

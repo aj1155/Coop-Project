@@ -59,5 +59,31 @@ public class FileService {
         f.delete();   //폴더는 맨 나중에 삭제
         
       }
+    
+    public String compareText(String a1,String a2){
+		StringBuilder s3 = new StringBuilder("");
+		
+		String[] s1 = a1.split("\n");
+		String[] s2 = a2.split("\n");
+		for(int i=0;i<s2.length;i++){
+			System.out.println(s1[i] +" "+ s2[i]);
+		}
+		for(int i=0;i<s1.length;i++){
+			if(s2[i].startsWith("$cha")){
+				s3.append("$del ");
+				s3.append(s1[i]);
+				s3.append("\n");
+				s3.append("$add ");
+				s3.append(s2[i].replace("$cha", ""));
+				s3.append("\n");
+			}
+			else{
+				s3.append(s2[i]);
+				s3.append("\n");
+			}
+		}
+		
+		return s3.toString();
+    }
 
 }

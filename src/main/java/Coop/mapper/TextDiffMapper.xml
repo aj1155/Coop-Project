@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//KO"
+             "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+             
+<mapper namespace="Coop.mapper.TextDiffMapper">
+	
+	<select id="selectByfileId" resultType = "Coop.model.TextDiff">
+    	SELECT *
+    	FROM textdiff
+    	WHERE fileId = #{id}
+    	order by create_time desc
+    </select>
+    
+    <select id = "select" resultType = "Coop.model.TextDiff">
+    	select *
+		from notice
+		where id in(select id
+					from notice_user
+					where member = #{member} and confirm = 0 and projectId = #{projectId});
+    	
+    </select>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO textdiff(fileId,content,des,userId,userName,create_time)
+    	values(#{fileId},#{content},#{des},#{userId},#{userName},NOW())
+    </insert>
+    
+    <update id="updateConfirm" parameterType="hashmap">
+    	UPDATE notice
+    	SET confirm = 1
+    	where projectId = #{param.proId} and recipient = #{param.userId} 
+    </update>
+	
+	<delete id="delete">
+		delete
+		from textdiff
+		where fileId = #{id}
+	</delete>
+
+</mapper>

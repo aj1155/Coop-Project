@@ -159,7 +159,7 @@ public class ProjectController {
 	}
 	@RequestMapping(value="/{projectId}/{issueId}/issueInfo.do",method = RequestMethod.POST)
 	public String issueInfo(@PathVariable String projectId,@PathVariable String issueId,
-			IComment icomment,Model model){
+			IComment icomment,Model model) throws CommunicationException, KeystoreException, InvalidDeviceTokenFormatException{
 		
 		icomment.setIssueId(Integer.parseInt(issueId));
 		icomment.setProjectId(Integer.parseInt(projectId));
@@ -171,7 +171,21 @@ public class ProjectController {
 		model.addAttribute("issue",issueMapper.selectById(Integer.parseInt(issueId)));
 		model.addAttribute("project", projectMapper.selectByProjectId(Integer.parseInt(projectId)));
 		model.addAttribute("commentList",iCommentMapper.selectByIssueId(Integer.parseInt(issueId)));
+		Issue iss = issueMapper.selectById(Integer.parseInt(issueId));
+		List<User> proUser = proUserMapper.selectByProjectId(Integer.parseInt(projectId));
 		
+		for(int i=0;i<proUser.size();i++){
+			
+			if(!userService.getCurrentUser().getId().equals(proUser.get(i).getId())){
+				
+			
+				UserKey userKey = userMapper.selectByKey(proUser.get(i).getId());
+				if(userKey!=null){
+					iosPushService.push(userKey.getUserkey(),userService.getCurrentUser().getName()+" 님이 "+iss.getName()+" 이슈에 댓글을 남겼습니다");
+				}
+				
+			}
+		}
 		return "layout/issue/info";
 	}
 	@RequestMapping(value="/{projectId}/issue.do",method = RequestMethod.GET)

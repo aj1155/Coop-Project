@@ -19,6 +19,7 @@ import Coop.mapper.UserMapper;
 import Coop.model.ChartData;
 import Coop.model.Invite;
 import Coop.model.User;
+import Coop.service.FileToText;
 import Coop.service.HTTPClientService;
 import Coop.service.IOSPushService;
 import Coop.service.MobileAuthenticationService;
@@ -38,6 +39,7 @@ public class HomeController {
 		@Autowired MobileAuthenticationService mobileAuthenticationService;
 		@Autowired HTTPClientService httpClientService;
 		@Autowired IOSPushService iosPushService;
+		@Autowired FileToText fileToText;
 		
 		@RequestMapping(value="/index.do", method=RequestMethod.GET)
 	    public String index(Model model) {
@@ -77,6 +79,14 @@ public class HomeController {
 		      
 		        return "home";
 		    }
+	    
+	     @RequestMapping(value="/text.do", method = RequestMethod.GET)
+		 public void textTest( Model model) {
+				String[] result = fileToText.compareText("C:/Users/USER/Documents/카카오톡 받은 파일/1.docx", "C:/Users/USER/Documents/카카오톡 받은 파일/2.docx");
+				System.out.println(result[1]);
+				
+	     }
+	    
 	    
 	    
 	    

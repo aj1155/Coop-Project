@@ -184,13 +184,13 @@ label {
   <ul class="mylist">
   		<c:forEach var="user" items="${pro_user}">
     	  <c:if test="${user.img!=null}">
-   			 <span><img id="user_img" src="/Coop/res/images/${user.id}.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><h5> ${user.name}</h5></li>
+   			 <span><img id="user_img" src="/Coop/res/images/${user.id}.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/user/${user.id}/history.do"><h5> ${user.name}</h5></li>
    			  <div class="pull-right action-buttons">
    			  		<input id="inv" type="button" class="btn btn-info" value="Message" data-url="/Coop/project/${user.id}/${project.id}/invite.do"/>
               </div> 
 	      </c:if>
    		  <c:if test="${user.img==null }">
-   		  	 <span><img id="user_img" src="/Coop/res/images/null.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/"><h5> ${user.name}</h5></li>
+   		  	 <span><img id="user_img" src="/Coop/res/images/null.jpg" class="avatar img-circle" alt="avatar" style="height:50px; width:50px;"/></span>&nbsp&nbsp<li id="pList" data-url="/Coop/user/${user.id}/history.do"><h5> ${user.name}</h5></li>
    		  	 <div class="pull-right action-buttons">
                     <input id="inv" type="button" class="btn btn-info" value="Message" data-url="/Coop/project/${user.id}/${project.id}/invite.do"/>       
              </div>  

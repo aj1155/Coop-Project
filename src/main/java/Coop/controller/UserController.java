@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import Coop.mapper.FileInnerMapper;
 import Coop.mapper.ImageMapper;
+import Coop.mapper.TextDiffMapper;
 import Coop.mapper.UserMapper;
 import Coop.model.Image;
 import Coop.model.User;
@@ -39,6 +41,8 @@ public class UserController {
 	@Autowired ImageMapper imageMapper;
 	@Autowired FileService fileService;
 	@Autowired MobileAuthenticationService mobileAuthenticationService;
+	@Autowired FileInnerMapper fileInnerMapper;
+	@Autowired TextDiffMapper textDiffMapper;
 	
 	@RequestMapping(value="/regist.do", method = RequestMethod.POST)
 	 public String regist(User user, Model model) {
@@ -66,6 +70,16 @@ public class UserController {
 		 
 		 return "layout/user/profile";
 	 }
+	 @RequestMapping(value="/{id}/history.do", method = RequestMethod.GET)
+	 public String history(@PathVariable String id,Model model) {
+		
+		 
+		 model.addAttribute("fileList",fileInnerMapper.selectByUserId(id));
+		 model.addAttribute("diffList",textDiffMapper.selectByUserId(id));
+		 model.addAttribute("userName", userService.getCurrentUser().getName());
+		 
+		 return "layout/user/history";
+	 }
 	 @RequestMapping(value="/{id}/profile.do", method = RequestMethod.POST)
 	 public String edit(@PathVariable String id,User user,
 		 ModelAndView model,@RequestParam("file") MultipartFile uploadedFile) throws IOException {
@@ -84,6 +98,7 @@ public class UserController {
 		 
 		 return "layout/main/home";
 	 }
+	
 	 
 	 
 	 	/*모바일 url*/

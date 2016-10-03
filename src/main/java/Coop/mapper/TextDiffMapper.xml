@@ -10,6 +10,12 @@
     	WHERE fileId = #{id}
     	order by create_time desc
     </select>
+    <select id="selectByUserId" resultType = "Coop.model.TextDiff">
+    	SELECT *
+    	FROM textdiff
+    	WHERE userId = #{id}
+    	order by create_time desc
+    </select>
     
     <select id = "select" resultType = "Coop.model.TextDiff">
     	select *

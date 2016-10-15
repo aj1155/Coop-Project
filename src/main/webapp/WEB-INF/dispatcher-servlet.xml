@@ -51,8 +51,8 @@
         class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://52.43.199.148:3306/coop;autoReconnection=true"/>
-        <property name="username" value="root" />
-        <property name="password" value="aksrltjqj1!" />
+        <property name="username" value="" />
+        <property name="password" value="" />
     </bean>
      -->
     <bean id="myDataSource1" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

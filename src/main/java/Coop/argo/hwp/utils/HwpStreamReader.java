@@ -41,7 +41,7 @@ public class HwpStreamReader {
 		this.input = inputStream;
 		buf = new byte[4];
 	}
-
+	
 	/**
 	 * 읽을 데이터가 더 있는가?
 	 * 

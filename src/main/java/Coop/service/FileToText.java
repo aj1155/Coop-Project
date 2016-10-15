@@ -11,10 +11,16 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.hslf.extractor.PowerPointExtractor;
+import org.apache.poi.hssf.extractor.ExcelExtractor;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.xslf.extractor.XSLFPowerPointExtractor;
 import org.apache.poi.xssf.extractor.XSSFExcelExtractor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +28,6 @@ import Coop.argo.hwp.HwpTextExtractor;
 import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.poi.hslf.extractor.PowerPointExtractor;
-import org.apache.poi.hssf.extractor.ExcelExtractor;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
 
 @Service
 public class FileToText {
@@ -275,9 +275,12 @@ public class FileToText {
 	
 	private static String docxFileContentParserAsFile(File file) {
 		try {
-			FileInputStream fs = new FileInputStream(file);
-			OPCPackage d = OPCPackage.open(fs);
+			System.out.println(file.getName());
+			//FileInputStream fs = new FileInputStream(file);
+			OPCPackage d = OPCPackage.open(file);
+			
 			if (file.getName().endsWith(".docx")) {
+				System.out.println("문제");
 				XWPFWordExtractor xw = new XWPFWordExtractor(d);
 				return xw.getText();
 			} else if (file.getName().endsWith(".pptx")) {
@@ -290,7 +293,7 @@ public class FileToText {
 				return xe.getText();
 			}
 		} catch (Exception e) {
-			// System.out.println("# DocxFileParser Error :" + e.getMessage());
+			System.out.println("# DocxFileParser Error :" + e.getMessage());
 			return "-1";
 		}
 		return "-1";
